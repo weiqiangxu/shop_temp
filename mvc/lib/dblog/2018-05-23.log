@@ -1,0 +1,4 @@
+SQLSTATE[42S22]: Column not found: 1054 Unknown column 'Array' in 'field list'
+[SQL]SELECT sc_pro_id,Array FROM sh_user_coll WHERE 1=1  group by sc_pro_id order by count desc limit 10
+SQLSTATE[42S22]: Column not found: 1054 Unknown column 'Array' in 'where clause'
+[SQL]SELECT pro_name,pro_id FROM sh_product WHERE 1=1  and pro_id not in(Array,Array) order by pro_id desc

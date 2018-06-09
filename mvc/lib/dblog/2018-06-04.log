@@ -1,0 +1,22 @@
+SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ord_pay_check' in 'where clause'
+[SQL]SELECT count(1) count FROM sh_order WHERE 1=1  and ord_status>0 and ord_pay_check is not null
+SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1
+[SQL]SELECT * FROM sh_province_city WHERE 1=1  AND pc_id IN (,)
+SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1
+[SQL]SELECT * FROM sh_province_city WHERE 1=1  AND pc_id IN (,)
+SQLSTATE[42S22]: Column not found: 1054 Unknown column '18060003_1' in 'where clause'
+[SQL]SELECT * FROM sh_order_product WHERE 1=1  and orp_ord_id in(18060003_1,18060002_2,18060002_1)
+SQLSTATE[42S22]: Column not found: 1054 Unknown column '18060003_1' in 'where clause'
+[SQL]SELECT * FROM sh_order_product WHERE 1=1  and orp_ord_id in(18060003_1,18060002_2,18060002_1)
+SQLSTATE[42S22]: Column not found: 1054 Unknown column '18060003_1' in 'where clause'
+[SQL]SELECT * FROM sh_order_product WHERE 1=1  and orp_ord_id in(18060003_1,18060002_2,18060002_1)
+SQLSTATE[42S22]: Column not found: 1054 Unknown column '18060003_1' in 'where clause'
+[SQL]SELECT * FROM sh_order_product WHERE 1=1  and orp_ord_id in(18060003_1,18060002_2,18060002_1)
+SQLSTATE[42S22]: Column not found: 1054 Unknown column '18060003_1' in 'where clause'
+[SQL]SELECT * FROM sh_order_product WHERE 1=1  and orp_ord_id in(18060003_1,18060002_2,18060002_1)
+SQLSTATE[42S22]: Column not found: 1054 Unknown column '18060003_1' in 'where clause'
+[SQL]SELECT * FROM sh_order_product WHERE 1=1  and orp_ord_id in(18060003_1,18060002_4,18060002_3,18060002_2,18060002_1)
+SQLSTATE[42S22]: Column not found: 1054 Unknown column '18060003_1' in 'where clause'
+[SQL]SELECT * FROM sh_order_product WHERE 1=1  and orp_ord_id in(18060003_1,18060002_4,18060002_3,18060002_2,18060002_1)
+SQLSTATE[42S22]: Column not found: 1054 Unknown column '18060003_1' in 'where clause'
+[SQL]SELECT * FROM sh_order_product WHERE 1=1  and orp_ord_id in(18060003_1,18060002_4,18060002_3,18060002_2,18060002_1)

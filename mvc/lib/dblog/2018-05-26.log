@@ -1,0 +1,2 @@
+SQLSTATE[42S22]: Column not found: 1054 Unknown column 'sv_id' in 'where clause'
+[SQL]DELETE FROM sh_user_coll WHERE 1=1  and sv_id=1 and sc_u_id=1

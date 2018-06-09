@@ -1,0 +1,2 @@
+SQLSTATE[42S22]: Column not found: 1054 Unknown column 'art_status' in 'where clause'
+[SQL]SELECT * FROM sh_province_city WHERE 1=1  and art_status = 1 and art_id=1

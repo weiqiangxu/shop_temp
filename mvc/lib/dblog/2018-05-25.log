@@ -1,0 +1,56 @@
+SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ord_id<0' at line 1
+[SQL]SELECT count(1) count FROM sh_order WHERE 1=1 ord_id<0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.ex_express' doesn't exist
+[SQL]SELECT exp_code FROM ex_express WHERE 1=1  and (exp_code='顺丰速运' or exp_name='顺丰速运') LIMIT 1
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.ex_express' doesn't exist
+[SQL]SELECT exp_code FROM ex_express WHERE 1=1  and (exp_code='申通快递' or exp_name='申通快递') LIMIT 1
+SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ext_exp_co' in 'on clause'
+[SQL]SELECT * FROM sh_express_track left join sh_express on exp_code=ext_exp_co WHERE 1=1  and ext_exp_code='STO' AND ext_number='3362193471646'
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.ex_express' doesn't exist
+[SQL]SELECT exp_code FROM ex_express WHERE 1=1  and (exp_code='申通快递' or exp_name='申通快递') LIMIT 1
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.my_product' doesn't exist
+[SQL]SELECT count(*) as kc FROM my_product join usr_users on usr_id=pro_usr_id WHERE 1=1  and pro_status = 1 and pro_system = 1
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 0
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 1
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 1
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 1
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 2
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 2
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'shop_best.god_order' doesn't exist
+[SQL]SELECT count(*) as kc FROM god_order WHERE 1=1 and ord_buy_id = 0 and ord_status = 3
