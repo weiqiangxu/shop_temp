@@ -37,7 +37,7 @@
                         </form>
                         <table class="layui-table">
                             <colgroup>
-                                <col width="50">
+                                <col width="100">
                                 <?php foreach($showWidth as $k=>$v){ ?>
                                 <col width="<?php if(in_array($k, $show)) echo $v;?>">
                                 <?php } ?>
@@ -51,7 +51,6 @@
                                     <th><?php echo $v;?></th>
                                     <?php } ?>
                                     <?php } ?>
-                                    
                                 </tr> 
                             </thead>
                             <tbody>
@@ -59,7 +58,6 @@
                                 <?php foreach($data as $k => $v){ ?>
                                 <tr>
                                     <td>
-                                        <div class="layui-table-cell laytable-cell-1-10">
                                         <?php if($_SESSION['_style']=='2'){ ?>
                                         <a class="layui-btn layui-btn-xs" href="<?php echo mvc::$cfg['HOST']['adminUri'];?>product/publish?proId=<?php echo $v['pro_id'];?>">编辑</a>
                                         <a class="layui-btn layui-btn-danger layui-btn-xs" onclick='product.del("<?php echo $v['pro_id'];?>")'>删除</a>
@@ -68,7 +66,6 @@
                                         <?php }elseif($_SESSION['_style']=='0'){ ?>
                                         <a class="layui-btn layui-btn-xs" href="<?php echo mvc::$cfg['HOST']['adminUri'];?>product/check?proId=<?php echo $v['pro_id'];?>">查看</a>
                                         <?php } ?>
-                                        </div>
                                     </td>
                                     <?php if(in_array('pro_id', $show)){ ?>
                                     <td><?php echo $v['pro_id'];?></td>
@@ -116,7 +113,9 @@
                                     <td><?php echo $v['pro_model3'];?></td>
                                     <?php } ?>
                                     <?php if(in_array('pro_price', $show)){ ?>
-                                    <td><?php echo sprintf("%.2f",$v['pro_price']);?></td>
+                                    <td class="right">
+                                        <?php echo sprintf("%.2f",$v['pro_price']);?>
+                                    </td>
                                     <?php } ?>
                                     <?php if(in_array('check_admin', $show)){ ?>
                                         <td>
@@ -190,7 +189,7 @@
 
 
 
-    <SCRIPT type="text/javascript">
+    <script type="text/javascript">
         <!--
         var setting = {
             check: {
@@ -236,7 +235,7 @@
         }
 
 
-    </SCRIPT>
+    </script>
 
 
 

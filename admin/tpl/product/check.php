@@ -14,31 +14,31 @@
               </colgroup>
               <tbody>
                 <tr>
-                  <th><?php echo mvc::$cfg['LANG'][1];?>名称</th>
+                  <th class="right"><?php echo mvc::$cfg['LANG'][1];?>名称</th>
                   <td><?php echo $data['base']['pro_name1'];?></td>
-                  <th><?php echo mvc::$cfg['LANG'][2];?>品牌</th>
+                  <th class="right"><?php echo mvc::$cfg['LANG'][2];?>品牌</th>
                   <td><?php echo $data['base']['pro_make1'];?></td>
-                  <th><?php echo mvc::$cfg['LANG'][3];?>车型</th>
+                  <th class="right"><?php echo mvc::$cfg['LANG'][3];?>车型</th>
                   <td><?php echo $data['base']['pro_model1'];?></td>
                 </tr>
                 <tr>
-                  <th><?php echo mvc::$cfg['LANG'][1];?>名称</th>
+                  <th class="right"><?php echo mvc::$cfg['LANG'][1];?>名称</th>
                   <td><?php echo $data['base']['pro_name2'];?></td>
-                  <th><?php echo mvc::$cfg['LANG'][2];?>品牌</th>
+                  <th class="right"><?php echo mvc::$cfg['LANG'][2];?>品牌</th>
                   <td><?php echo $data['base']['pro_make2'];?></td>
-                  <th><?php echo mvc::$cfg['LANG'][3];?>车型</th>
+                  <th class="right"><?php echo mvc::$cfg['LANG'][3];?>车型</th>
                   <td><?php echo $data['base']['pro_model2'];?></td>
                 </tr>
                 <tr>
-                  <th><?php echo mvc::$cfg['LANG'][1];?>名称</th>
+                  <th class="right"><?php echo mvc::$cfg['LANG'][1];?>名称</th>
                   <td><?php echo $data['base']['pro_name3'];?></td>
-                  <th><?php echo mvc::$cfg['LANG'][2];?>品牌</th>
+                  <th class="right"><?php echo mvc::$cfg['LANG'][2];?>品牌</th>
                   <td><?php echo $data['base']['pro_make3'];?></td>
-                  <th><?php echo mvc::$cfg['LANG'][3];?>车型</th>
+                  <th class="right"><?php echo mvc::$cfg['LANG'][3];?>车型</th>
                   <td><?php echo $data['base']['pro_model3'];?></td>
                 </tr>
                 <tr>
-                  <th>价格</th>
+                  <th class="right">价格</th>
                   <td colspan="5"><?php echo sprintf("%.2f",$data['base']['pro_price']);?></td>
                 </tr>
               </tbody>
@@ -156,19 +156,19 @@
                 </colgroup>
                 <tbody>
                   <tr>
-                    <th>产品状态</th>
+                    <th class="right">产品状态</th>
                     <td colspan="3" class="<?php echo $proStatColor[$data['base']['pro_status']];?>">
                         <?php echo $proStat[$data['base']['pro_status']];?>
                     </td>
                   </tr>
                   <tr>
-                    <th>审核人</th>
+                    <th class="right">审核人</th>
                     <td><?php echo $data['base']['pro_check_detail']['u_name'];?></td>
-                    <th>时间</th>
+                    <th class="right">时间</th>
                     <td><?php echo date('Y-m-d H:i:s',$data['base']['pro_check_detail']['time']);?></td>
                   </tr>
                   <tr>
-                    <th>备注</th>
+                    <th class="right">备注</th>
                     <td colspan="3"><?php echo $data['base']['pro_check_detail']['remark'];?></td>
                   </tr>
                 </tbody>

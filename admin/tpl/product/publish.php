@@ -1,6 +1,6 @@
 <?php include_once(mvc::$cfg['PATH_TPL'].'public/headBase.php');?>
 <div class="layui-fluid">
-    <form class="layui-form" method="post" action="" lay-filter="component-form-group">
+    <form class="layui-form" id="publish" method="post" action="" lay-filter="component-form-group">
 
         <div class="layui-col-md3">
             <div class="layui-form-item">
@@ -8,7 +8,7 @@
                     <input type="hidden" name="base[pro_id]" value="<?php echo $Params['proId']?>">
                     <label class="layui-form-label" style="padding-left: 5px;">名称</label>
                     <div class="layui-input-inline">
-                        <table class="layui-table">
+                        <table class="layui-table max-wid">
                           <colgroup>
                             <col width="50">
                             <col>
@@ -39,7 +39,7 @@
                     <input type="hidden" name="base[pro_id]" value="<?php echo $Params['proId']?>">
                     <label class="layui-form-label" style="padding-left: 5px;">品牌</label>
                     <div class="layui-input-inline">
-                        <table class="layui-table">
+                        <table class="layui-table max-wid">
                           <colgroup>
                             <col width="50">
                             <col>
@@ -70,7 +70,7 @@
                     <input type="hidden" name="base[pro_id]" value="<?php echo $Params['proId']?>">
                     <label class="layui-form-label" style="padding-left: 5px;">车型</label>
                     <div class="layui-input-inline">
-                        <table class="layui-table">
+                        <table class="layui-table max-wid">
                           <colgroup>
                             <col width="50">
                             <col>

@@ -67,20 +67,20 @@ class productAction
 
 
         $showWidth = [
-            'pro_id' => '90',
+            'pro_id' => '60',
             'u_realname' => '50',
-            'pro_status' => '120',
-            'img' => '100',
-            'pro_name1' => '100',
-            'pro_name2' => '100',
-            'pro_name3' => '100',
-            'pro_make1' => '100',
-            'pro_make2' => '100',
-            'pro_make3' => '100',
-            'pro_model1' => '100',
-            'pro_model2' => '100',
-            'pro_model3' => '100',
-            'pro_price' => '100',
+            'pro_status' => '95',
+            'img' => '85',
+            'pro_name1' => '95',
+            'pro_name2' => '95',
+            'pro_name3' => '95',
+            'pro_make1' => '95',
+            'pro_make2' => '95',
+            'pro_make3' => '95',
+            'pro_model1' => '95',
+            'pro_model2' => '95',
+            'pro_model3' => '95',
+            'pro_price' => '45',
             'check_admin' => '100',
             'check_time' => '50',
             'check_remark' => '80',
@@ -530,7 +530,7 @@ class productAction
             LibFc::ajaxJsonEncode(['status'=>false,'data'=>'参数错误！']);
         $data = $_POST['data'];
         $tmp['pro_status'] = $data['status'];
-        $tmp['pro_check_json'] = json_encode(['u_id'=>$_SESSION['_userid'],'u_name'=>$_SESSION['u_realname'],'time'=>time(), 'remark'=>$data['remark']]);
+        $tmp['pro_check_json'] = json_encode(['u_id'=>$_SESSION['_userid'],'u_name'=>$_SESSION['_userrealname'],'time'=>time(), 'remark'=>$data['remark']]);
 
         $MainBase = new MainBase();
         $MainBase->set('sh_product',$tmp,sprintf("and pro_id=%d",$data['pro_id']));

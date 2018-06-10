@@ -60,6 +60,9 @@ class sysAction
     */
     public function userList()
     {
+        if($_SESSION['_userid']!='1')
+            LibTpl::Error('您没有权限操作！');
+
         $Params = mvc::$URL_PARAMS;
         $MainBase = new MainBase();
         $page = isset($Params['page']) ? (int)$Params['page']:1;
@@ -75,6 +78,7 @@ class sysAction
             }
             $where .= sprintf(" and u_style = '%d' ",$Params['type']);
         }
+
 
         // 限制其他管理员查看超级管理员
         if($_SESSION['_userid']!='1')
@@ -178,11 +182,15 @@ class sysAction
     */
     function setUser()
     {   
+
         $Params = mvc::$URL_PARAMS;
         if(empty($Params['id']) || !LibFc::Int($Params['id'])){
             header("Location:".mvc::$cfg['HOST']['adminUri']);
             exit;
         }
+
+        if($_SESSION['_userid']!='1' && $_SESSION['_userid']!=$Params['id'])
+            LibTpl::Error('您没有权限操作！');
 
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             // 保存更新

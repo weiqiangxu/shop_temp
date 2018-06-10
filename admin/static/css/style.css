@@ -220,3 +220,4 @@ a.img{display: block; width: 20px;height: 16px;margin: 0 1px;float: left;}
 .add-num-box{margin-left: 110px;margin-top: 10px;margin-bottom: 50px;}
 #treeDemo-box{border:1px solid #ccc;z-index:99;background-color:rgb(255,255,255);
     width: 160px;cursor: pointer;position: absolute;top:40px;display: none;}
+#publish .max-wid{width: 140%;}
