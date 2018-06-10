@@ -62,6 +62,7 @@ class productAction
 
         // 状态枚举 0待审 1已审核 2审核不通过
         LibTpl::Set('proStat',['0'=>'待审','1'=>'已审核','2'=>'审核不通过']);
+        LibTpl::Set('proStatColor',['0'=>'gray','1'=>'green','2'=>'red']);
         // meta 
         LibTpl::Set('menu', 'list');
         LibTpl::Set('Params',$Params);
@@ -242,32 +243,7 @@ class productAction
 	 */
 	public function impProBase()
 	{
-		$MainRule = new MainRule();
 		$Params = mvc::$URL_PARAMS;
-		switch ($Params['type'])
-		{
-			case 'base':
-        		if(!$MainRule->rule('PR09',false))
-		        {
-		        	echo json_encode(['code'=>1,'msg'=>'无操作权限','status'=>false]);
-		        	exit();
-		        }
-        		break;
-        	case 'num':
-        		if(!$MainRule->rule('PR11',false))
-		        {
-		        	echo json_encode(['code'=>1,'msg'=>'无操作权限','status'=>false]);
-		        	exit();
-		        }
-        		break;
-        	case 'model':
-        		if(!$MainRule->rule('PR12',false))
-		        {
-		        	echo json_encode(['code'=>1,'msg'=>'无操作权限','status'=>false]);
-		        	exit();
-		        }
-        		break;
-		}
 		include(mvc::$cfg['ROOT'].'vendor/PHPExcel/Classes/PHPExcel.php');
         include(mvc::$cfg['ROOT'].'vendor/PHPExcel/Classes/PHPExcel/Writer/Excel5.php');
         
@@ -290,12 +266,6 @@ class productAction
         {
         	case 'base':
         		$cellName = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M');
-        		break;
-        	case 'num':
-        		$cellName = array('A', 'B', 'C');
-        		break;
-        	case 'model':
-        		$cellName = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M','N');
         		break;
         }
         $obj = $objRead->load($file);  //建立excel对象  
@@ -324,13 +294,12 @@ class productAction
                 $data[$_row][$cellName[$_column]] = $cellValue;  
             }  
         }
-        // print_r($data);
-        // die;
+
         $MainProduct=new MainProduct();
         switch ($Params['type']) 
         {
         	case 'base':
-        		$res=$MainProduct->impoProBase($data);
+        		$res=$MainProduct->impoProBase($data,$_SESSION['_userid']);
         		$res['code']=0;
         		break;
         	

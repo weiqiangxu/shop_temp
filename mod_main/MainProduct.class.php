@@ -600,47 +600,49 @@ class MainProduct extends MainBase
 	 * @method    产品导入
 	 * @param     [type]      $data [description]
 	 * @return    [type]            [description]
-	 * @author 卢
+	 * @author    卢
 	 * @copyright 2018-05-21
 	 */
-	public function impoProBase($data)
+	public function impoProBase($data,$uid)
 	{
 		if(!empty($data))
 		{
 			$fieldArr=[
-	            'A'=>'pro_wl_code',
-	            'B'=>'pro_code',
-	            'C'=>'pro_lab1',
-	            'E'=>'pro_name',
-	            'G'=>'pro_price',
-	            'H'=>'pro_price_vip1',
-	            'I'=>'pro_price_vip2',
-	            'J'=>'pro_price_vip3',
-	            'K'=>'pro_count',
-	            'L'=>'pro_unit',
-	            'M'=>'pro_info'
+	            'A'=>'pro_id',
+	            'B'=>'pro_name1',
+	            'C'=>'pro_name2',
+	            'D'=>'pro_name3',
+	            'E'=>'pro_make1',
+	            'F'=>'pro_make2',
+	            'G'=>'pro_make3',
+	            'H'=>'pro_model1',
+	            'I'=>'pro_model2',
+	            'J'=>'pro_model3',
+	            'K'=>'pro_price',
+	            'L'=>'number',
+	            'M'=>'main'
 	        ];
 	        $dataArr=[];
+
 			foreach ($data as $k => $v) 
 			{
 				//获取原来是否有该产品
-				if(!empty(trim($v['A'])))
+				$proId=0;
+				if(!empty(trim($v['A'])) && LibFc::Int(trim($v['A'])))
 				{
-					$where=sprintf(" and pro_wl_code='%s'",trim($v['A']));
-				}else if(!empty(trim($v['B'])))
-				{
-					$where=sprintf(" and pro_code='%s'",trim($v['B']));
-				}
-				else{
+					$where=sprintf(" and pro_id='%s' and pro_u_id=%d",trim($v['A']),$uid);
+					$res=$this->get($this->table,['pro_id'],$where,true);
+					if(!empty($res['data']))
+					{
+						$proId=$res['data']['pro_id'];
+					}
+				}elseif((empty($v['B'])&&empty($v['C']&&empty($v['D'])))||empty($v['K'])||!is_numeric($v['K']) || sprintf("%.2f",$v['K'])=='0.00'){
+					return ['status'=>false,'data'=>'第'.$k.'行的数据错误！价格不能为空并且必须是数字和名称至少有一个。'];
 					continue;
 				}
-				$res=$this->get($this->table,['pro_id'],$where,true);
 
-				$proId=0;
-				if(!empty($res['data']))
-				{
-					$proId=$res['data']['pro_id'];
-				}
+				// 互换号码
+				$numbers = [];
 				//基本信息
 				foreach ($v as $cellId => $val) 
 				{
@@ -649,16 +651,47 @@ class MainProduct extends MainBase
 						switch ($fieldArr[$cellId]) 
 						{
 							case 'pro_price':
-							case 'pro_price_vip1':
-							case 'pro_price_vip2':
-							case 'pro_price_vip3':
 								$dataArr[$fieldArr[$cellId]]=(!empty((float)trim($val))?(float)trim($val):0);
 							break;
 							// case 'pro_code':
 							// 	$dataArr[$fieldArr[$cellId]]=LibFc::FormatNum($val);
 							// 	break;
-							case 'pro_count':
-								$dataArr[$fieldArr[$cellId]]=(int)($val);
+							case 'number':	
+								$val = str_replace("：", ':', $val);
+								$val = str_replace("；", ';', $val);
+								$val = str_replace('，', ',', $val);
+								$val = explode(';', $val);
+
+								$m = str_replace("：", ':', $v['M']);
+
+								$tmp = [];
+								foreach ($val as $kk => $vv) {
+									if($vv==$m){
+										continue;
+									}
+									if(count(explode(':', $vv))==2)
+									{
+										$tmp[] = [
+											'prn_factory'=> trim(current(explode(':', $vv))),
+											'prn_display'=>trim(end(explode(':', $vv)))
+										];
+									}
+								}
+								if(!empty($tmp))
+								{
+									$numbers = $tmp;
+								}
+							break;
+							case 'main':
+								$val = str_replace("：", ':', $val);
+								$tmp = [];
+								if(count(explode(':', $val))==2)
+								{
+									$tmp['prn_factory']=trim(current(explode(':', $val)));
+									$tmp['prn_display']=trim(end(explode(':', $val)));
+									$tmp['prm_ismain']=1;
+								}
+								$numbers[] = $tmp;
 							break;
 							default:
 								$dataArr[$fieldArr[$cellId]]=trim($val);
@@ -667,13 +700,8 @@ class MainProduct extends MainBase
 						
 					}
 				}
-				// print_r($dataArr);
-				// die;
-				//分类处理
-				$where=sprintf(" and part_name='%s'",trim($v['D']));
-				$res=$this->get('sh_part',['part_id'],$where,true);
-				$partRes=$res['data'];
 				$this->MainDb->Begin();
+				
 				if($proId>0)
 				{
 					//修改
@@ -681,88 +709,39 @@ class MainProduct extends MainBase
 				}
 				else
 				{
+					unset($dataArr['pro_id']);
+					$dataArr['pro_u_id']=$uid;
+					$dataArr['pro_atime']=time();
+					$dataArr['pro_etime']=time();
 					$res=$this->add($this->table,$dataArr);
 					$proId=$res['data'];
 
 				}
+				$numArrData = [];
+				$index=0;
+				foreach ($numbers as $val) 
+				{
 
-				// $res = $this->get('sh_product join sh_product_number on pro_id=prn_pro_id and prm_self=1',['pro_code', 'pro_url'],sprintf(' and pro_id=%d',$proId),true);
-				// if(empty($res['data']['pro_url']))
-				// {
-					
-				// }
-				$url='item_'.LibFc::FormatNum($dataArr['pro_code']).'_'.$proId.'.html';
-				$res=$this->set($this->table,['pro_url'=>$url],sprintf(' and pro_id=%d',$proId));
-				if(!empty(trim($v['B'])))
-				{
-					$this->setProductSelfNum($proId, ['prn_display'=>trim($v['B'])]);
-				}
-				if(!empty($partRes['part_id']))
-				{
-					$part_id=$partRes['part_id'];
-					if(empty($partRes['part_lab1']))
+					$where=sprintf(" and prn_factory='%s' and prn_display='%s' and prn_pro_id=%d",$val['prn_factory'],$val['prn_display'],$proId,true);
+					$res=$this->get('sh_product_number',['prn_id'],$where,true);
+					if(!empty($res['data']))
 					{
-						$this->set('sh_part',['part_lab1'=>'原型号'],sprintf(' and part_id=%d',$part_id));
-					}
-				}
-				else
-				{
-					//添加分类
-					$partArr=[
-						'part_name'=>$v['D'],
-						'part_lab1'=>'原型号'
-					];
-					$res=$this->add('sh_part',$partArr);
-					$part_id=$res['data'];
-				}
-				$this->set($this->table,['pro_part_id'=>$part_id],sprintf(' and pro_id=%d',$proId));
-				//号码处理
-				$numStr=trim($v['F']);
-				$reArr=[
-					'，'=>',',
-					'：'=>':',
-					'；'=>';',
-					'，'=>',',
-					'：'=>':',
-					'；'=>';'
-				];
-				if(!empty($numStr))
-				{
-					foreach ($reArr as $find => $replace) 
-					{
-						$numStr=str_replace($find, $replace, $numStr);
-					}
-					$numArr=explode(';',$numStr);
-					// print_r($numArr);
-					// die;
-					$numArrData=[];
-					$index=0;
-					foreach ($numArr as $val) 
-					{
-						$val=explode(':', $val);
-						if(!empty($val))
-						{
-							$where=sprintf(" and prn_factory='%s' and prn_display='%s' and prn_pro_id=%d",trim($val[0]),trim($val[1]),$proId,true);
-							$res=$this->get('sh_product_number',['prn_id'],$where,true);
-							if($res['data'])
-							{
-								$numArrData[$res['data']['prn_id']]=[
-									'prn_factory'=>trim($val[0]),
-									'prn_display'=>trim($val[1]),
-									'prn_show'=>trim($val[1])
-								];
-								continue;
-							}
-						}
-						$numArrData[$index]=[
-							'prn_factory'=>trim($val[0]),
-							'prn_display'=>trim($val[1]),
-							'prn_show'=>trim($val[1])
+						$numArrData[$res['data']['prn_id']]=[
+							'prn_factory'=>$val['prn_factory'],
+							'prn_display'=>$val['prn_display']
 						];
-						$index--;
+						continue;
 					}
-					$this->setNums($numArrData,$proId);
+
+					$numArrData[$index]=[
+						'prn_factory'=>$val['prn_factory'],
+						'prn_display'=>$val['prn_display'],
+						'prm_ismain'=>(!empty($val['prm_ismain'])&&$val['prm_ismain']==1)?1:0
+					];
+					$index--;
 				}
+				$this->setNums($numArrData,$proId);
+				
 				$this->MainDb->End();
 				
 			}

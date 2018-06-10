@@ -27,40 +27,40 @@
                         <table class="layui-table">
                             <colgroup>
                                 <col width="90">
-                                <col width="120">
-                                <col width="120">
-                                <col width="120">
-                                <col width="120">
-                                <col>
-                                <col width="120">
-                                <col width="120">
+                                <col width="50">
                                 <col width="120">
                                 <col width="120">
                                 <col width="100">
-                                <col width="150">
+                                <col width="100">
+                                <col>
+                                <col width="100">
+                                <col width="100">
+                                <col width="100">
+                                <col width="100">
+                                <col width="100">
+                                <col width="100">
                                 <col width="50">
                                 <col width="80">
-                                <col width="150">
+                                <col width="120">
                               </colgroup>
                             <thead>
                                 <tr>
                                     <th>操作</th>
+                                    <th>ID</th>
                                     <th>发布者</th>
-                                    <th>图片</th>
-                                    <th>产品名[<?php echo mvc::$cfg['LANG']['1'];?>]</th>
-                                    <th>产品名[<?php echo mvc::$cfg['LANG']['2'];?>]</th>
-                                    <th>产品名[<?php echo mvc::$cfg['LANG']['3'];?>]</th>
-                                    <th>品牌[<?php echo mvc::$cfg['LANG']['1'];?>]</th>
-                                    <th>品牌[<?php echo mvc::$cfg['LANG']['2'];?>]</th>
-                                    <th>品牌[<?php echo mvc::$cfg['LANG']['3'];?>]</th>
-                                    <th>车型[<?php echo mvc::$cfg['LANG']['1'];?>]</th>
-                                    <th>车型[<?php echo mvc::$cfg['LANG']['2'];?>]</th>
-                                    <th>车型[<?php echo mvc::$cfg['LANG']['3'];?>]</th>
-                                    <th>价格</th>
                                     <th>状态</th>
+                                    <th>图片</th>
+                                    <th>产品名<br/>[<?php echo mvc::$cfg['LANG']['1'];?>]</th>
+                                    <th>产品名<br/>[<?php echo mvc::$cfg['LANG']['2'];?>]</th>
+                                    <th>产品名<br/>[<?php echo mvc::$cfg['LANG']['3'];?>]</th>
+                                    <th>品牌<br/>[<?php echo mvc::$cfg['LANG']['1'];?>]</th>
+                                    <th>品牌<br/>[<?php echo mvc::$cfg['LANG']['2'];?>]</th>
+                                    <th>品牌<br/>[<?php echo mvc::$cfg['LANG']['3'];?>]</th>
+                                    <th>车型<br/>[<?php echo mvc::$cfg['LANG']['1'];?>]</th>
+                                    <th>车型<br/>[<?php echo mvc::$cfg['LANG']['2'];?>]</th>
+                                    <th>车型<br/>[<?php echo mvc::$cfg['LANG']['3'];?>]</th>
+                                    <th>价格</th>
                                     <th>添加时间</th>
-                                    <th>最近编辑</th>
-                                    <th>审核信息</th>
                                 </tr> 
                             </thead>
                             <tbody>
@@ -77,7 +77,11 @@
                                         <?php } ?>
                                         </div>
                                     </td>
+                                    <td><?php echo $v['pro_id'];?></td>
                                     <td><?php echo $v['u_realname'];?></td>
+                                    <td class="<?php echo $proStatColor[$v['pro_status']];?>">
+                                        <?php echo $proStat[$v['pro_status']];?>
+                                    </td>
                                     <td>
                                         <div class="layui-table-cell laytable-cell-1-imgUrl"><img src="<?php echo $v['imgUrl'];?>"></div>
                                     </td>
@@ -94,15 +98,12 @@
                                     <td><?php echo $v['pro_model3'];?></td>
 
                                     <td><?php echo sprintf("%.2f",$v['pro_price']);?></td>
-                                    <td><?php echo $proStat[$v['pro_status']];?></td>
                                     <td><?php if(!empty($v['pro_atime'])) echo date('Y-m-d H:i:s',$v['pro_atime']);?></td>
-                                    <td><?php if(!empty($v['pro_etime'])) echo date('Y-m-d H:i:s',$v['pro_etime']);?></td>
-                                    <td><?php echo json_decode($v['pro_check_json'],true);?></td>
                                 </tr>
                                 <?php } ?>
                                 <?php }else{ ?>
                                     <tr>
-                                        <td colspan="17" class="warn center">无相关记录！</td>
+                                        <td colspan="15" class="warn center">无相关记录！</td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
