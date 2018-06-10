@@ -1,7 +1,7 @@
 <?php include_once(mvc::$cfg['PATH_TPL'].'public/headBase.php');?>
 <div class="layui-fluid">
     <button class="layui-btn layui-bg-gray" style="margin-bottom: 10px;">
-        批量添加 | 编辑配件信息
+        批量添加 | 编辑产品信息
     </button>
     <button class="layui-btn layui-bg-cyan" onclick="location.href='<?php echo mvc::$cfg['HOST']['adminUrl']?>static/css/base.xls'" style="margin-bottom: 10px;">
         <i class="layui-icon layui-icon-download-circle"></i>
@@ -13,10 +13,11 @@
     <br/>
     <img src="<?php echo mvc::$cfg['HOST']['adminUrl'].'static/images/base2.png'?>">
     <br/>
-    <span class="gray">若未填写配件ID则自动新增否则编辑</span>
+    <div class="gray">1、若未填写产品ID则新增产品</div>
+    <div class="gray">2、如填写产品ID则编辑产品信息</div>
     <br/>
     <br/>
-    <button class="layui-btn layui-bg-gray" style="margin-bottom: 10px;">批量更新配件图片</button>
+    <button class="layui-btn layui-bg-gray" style="margin-bottom: 10px;">批量更新产品图片</button>
     <button class="layui-btn layui-bg-cyan" onclick="location.href='<?php echo mvc::$cfg['HOST']['adminUrl']?>static/css/model.zip'" style="margin-bottom: 10px;">
         <i class="layui-icon layui-icon-download-circle"></i>
         模板下载

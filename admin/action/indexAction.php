@@ -27,16 +27,4 @@ class indexAction
 		LibTpl::Put();
 	}
 
-
-
-    public function adduser()
-    {
-        $MainUser = new MainUser();
-        $data = [
-            'u_style'=>1,
-            'u_name'=>'admin',
-            'u_password'=>'123456'
-        ];
-        $MainUser->addUser($data);
-    }
 }

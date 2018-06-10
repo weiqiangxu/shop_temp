@@ -1,7 +1,7 @@
 <?php include_once(mvc::$cfg['PATH_TPL'].'public/headBase.php');?>
 <div class="layui-fluid">
     <div class="layui-form-item">
-        <label class="layui-form-label">基本信息：</label>
+        <label class="layui-form-label">基本信息</label>
         <div class="layui-inline">
             <table class="layui-table" style="width: 800px;">
               <colgroup>
@@ -47,7 +47,7 @@
     </div>
 
     <div class="layui-form-item">
-        <label class="layui-form-label">产品图片：</label>
+        <label class="layui-form-label">产品图片</label>
         <div class="layui-inline">
             <table class="layui-table" style="width: 600px;">
               <colgroup>
@@ -59,51 +59,21 @@
               </colgroup>
               <tbody>
                 <tr> 
+                    <?php if(!empty($data['images'])){ ?>
+                    <?php foreach($data['images'] as $k=>$v){ ?>
                     <td>
-                        <div class="layui-table-cell laytable-cell-1-imgUrl">
-                            <?php if(!empty($data['images'][0]['prp_name'])){?>
-                            <img class="layui-upload-img" src="<?php echo mvc::$cfg['HOST']['files'].$data['images'][0]['prp_path'].'100/'.$data['images'][0]['prp_name'].'.'.$data['images'][0]['prp_ext'];?>">
-                            <?php }else{?>
-                            <img src="<?php echo mvc::$cfg['HOST']['adminUrl'].'/static/images/noimg.gif'?>" class="layui-upload-img">
-                            <?php }?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="layui-table-cell laytable-cell-1-imgUrl">
-                            <?php if(!empty($data['images'][1]['prp_name'])){?>
-                            <img class="layui-upload-img" src="<?php echo mvc::$cfg['HOST']['files'].$data['images'][1]['prp_path'].'100/'.$data['images'][1]['prp_name'].'.'.$data['images'][1]['prp_ext'];?>">
-                            <?php }else{?>
-                            <img src="<?php echo mvc::$cfg['HOST']['adminUrl'].'/static/images/noimg.gif'?>" class="layui-upload-img">
-                            <?php }?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="layui-table-cell laytable-cell-1-imgUrl">
-                            <?php if(!empty($data['images'][2]['prp_name'])){?>
-                            <img class="layui-upload-img" src="<?php echo mvc::$cfg['HOST']['files'].$data['images'][2]['prp_path'].'100/'.$data['images'][2]['prp_name'].'.'.$data['images'][2]['prp_ext'];?>">
-                            <?php }else{?>
-                            <img src="<?php echo mvc::$cfg['HOST']['adminUrl'].'/static/images/noimg.gif'?>" class="layui-upload-img">
-                            <?php }?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="layui-table-cell laytable-cell-1-imgUrl">
-                            <?php if(!empty($data['images'][3]['prp_name'])){?>
-                            <img class="layui-upload-img" src="<?php echo mvc::$cfg['HOST']['files'].$data['images'][3]['prp_path'].'100/'.$data['images'][3]['prp_name'].'.'.$data['images'][3]['prp_ext'];?>">
-                            <?php }else{?>
-                            <img src="<?php echo mvc::$cfg['HOST']['adminUrl'].'/static/images/noimg.gif'?>" class="layui-upload-img">
-                            <?php }?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="layui-table-cell laytable-cell-1-imgUrl">
-                            <?php if(!empty($data['images'][4]['prp_name'])){?>
-                            <img class="layui-upload-img" src="<?php echo mvc::$cfg['HOST']['files'].$data['images'][4]['prp_path'].'100/'.$data['images'][4]['prp_name'].'.'.$data['images'][4]['prp_ext'];?>">
-                            <?php }else{?>
-                            <img src="<?php echo mvc::$cfg['HOST']['adminUrl'].'/static/images/noimg.gif'?>" class="layui-upload-img">
-                            <?php }?>
-                        </div>
-                    </td>
+                      <div class="layui-table-cell laytable-cell-1-imgUrl">
+                          <?php if(!empty($data['images'][$k]['prp_name'])){?>
+                          <img class="layui-upload-img" src="<?php echo mvc::$cfg['HOST']['files'].$data['images'][$k]['prp_path'].'100/'.$data['images'][$k]['prp_name'].'.'.$data['images'][$k]['prp_ext'];?>">
+                          <?php }else{?>
+                          <img src="<?php echo mvc::$cfg['HOST']['adminUrl'].'/static/images/noimg.gif'?>" class="layui-upload-img">
+                          <?php }?>
+                      </div>
+                  </td>
+                  <?php } ?>
+                  <?php }else{ ?>
+                    <!-- <span style="display: inline-block;  padding-top: 10px;">无</span> -->
+                  <?php } ?>
                 </tr>
               </tbody>
             </table>
@@ -136,7 +106,9 @@
                         <td><input type="radio" disabled readonly <?php if($v['prm_ismain']){echo 'checked';}?>></td>
                         </tr>
                         <?php }?>
-                        <?php }?>
+                        <?php }else{ ?>
+                          <tr><td colspan="3"></td></tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>

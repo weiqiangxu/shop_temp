@@ -6,7 +6,7 @@
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <input type="hidden" name="base[pro_id]" value="<?php echo $Params['proId']?>">
-                    <label class="layui-form-label" style="padding-left: 5px;">名称：</label>
+                    <label class="layui-form-label" style="padding-left: 5px;">名称</label>
                     <div class="layui-input-inline">
                         <table class="layui-table">
                           <colgroup>
@@ -37,7 +37,7 @@
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <input type="hidden" name="base[pro_id]" value="<?php echo $Params['proId']?>">
-                    <label class="layui-form-label" style="padding-left: 5px;">品牌：</label>
+                    <label class="layui-form-label" style="padding-left: 5px;">品牌</label>
                     <div class="layui-input-inline">
                         <table class="layui-table">
                           <colgroup>
@@ -68,7 +68,7 @@
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <input type="hidden" name="base[pro_id]" value="<?php echo $Params['proId']?>">
-                    <label class="layui-form-label" style="padding-left: 5px;">车型：</label>
+                    <label class="layui-form-label" style="padding-left: 5px;">车型</label>
                     <div class="layui-input-inline">
                         <table class="layui-table">
                           <colgroup>
@@ -97,14 +97,14 @@
 
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label">销售价：</label>
+                <label class="layui-form-label">销售价</label>
                 <div class="layui-input-inline">
                     <input type="tel" maxlength="10" name="base[pro_price]" lay-verify="number|price" placeholder="请输入产品销售价" autocomplete="off" value="<?php if(!empty($data['base']['pro_price']) && $data['base']['pro_price']>0 ) echo sprintf("%.2f",$data['base']['pro_price']);?>" class="layui-input">
                 </div>
             </div>         
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">配件图片：</label>
+            <label class="layui-form-label">配件图片</label>
             <div class="layui-inline">
                 <div class="layui-card">
                     <div class="layui-card-body">
@@ -264,7 +264,7 @@ layui.use('upload', function(){
 layui.use('form', function(){
     var form = layui.form;
     form.verify({
-        namefifter: function(value, item){ //value：表单的值、item：表单的DOM对象
+        namefifter: function(value, item){ //value表单的值、item：表单的DOM对象
             if(value=='' && $("input[name='base[pro_name2]']").val()=="" && $("input[name='base[pro_name3]']").val()==""){
                 return '名称至少输入一个';
             }

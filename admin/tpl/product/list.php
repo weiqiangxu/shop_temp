@@ -23,46 +23,35 @@
                                 </div>
                                 <?php } ?>
                                 &nbsp;
+                                显示列：
+                                <div class="layui-inline" style="position: relative;">
+                                <input type="hidden" value="<?php echo $colids;?>" id="showinp" name="show">
+                                <input class="layui-input" value="<?php echo $str;?>" id="show" onclick="showCol()" autocomplete="off">
+                                <div id="treeDemo-box" >
+                                    <ul id="treeDemo" class="ztree"></ul>
+                                </div>
+                                </div>
+                                &nbsp;
                                 <button class="layui-btn" type="submit" data-type="reload">搜索</button>
                             </div>
                         </form>
                         <table class="layui-table">
                             <colgroup>
-                                <col width="90">
                                 <col width="50">
-                                <col width="120">
-                                <col width="160">
-                                <col width="100">
-                                <col width="100">
+                                <?php foreach($showWidth as $k=>$v){ ?>
+                                <col width="<?php if(in_array($k, $show)) echo $v;?>">
+                                <?php } ?>
                                 <col>
-                                <col width="100">
-                                <col width="100">
-                                <col width="100">
-                                <col width="100">
-                                <col width="100">
-                                <col width="100">
-                                <col width="50">
-                                <col width="80">
-                                <col width="120">
-                              </colgroup>
+                            </colgroup>
                             <thead>
                                 <tr>
                                     <th>操作</th>
-                                    <th>ID</th>
-                                    <th>发布者</th>
-                                    <th>状态</th>
-                                    <th>图片</th>
-                                    <th>产品名<br/>[<?php echo mvc::$cfg['LANG']['1'];?>]</th>
-                                    <th>产品名<br/>[<?php echo mvc::$cfg['LANG']['2'];?>]</th>
-                                    <th>产品名<br/>[<?php echo mvc::$cfg['LANG']['3'];?>]</th>
-                                    <th>品牌<br/>[<?php echo mvc::$cfg['LANG']['1'];?>]</th>
-                                    <th>品牌<br/>[<?php echo mvc::$cfg['LANG']['2'];?>]</th>
-                                    <th>品牌<br/>[<?php echo mvc::$cfg['LANG']['3'];?>]</th>
-                                    <th>车型<br/>[<?php echo mvc::$cfg['LANG']['1'];?>]</th>
-                                    <th>车型<br/>[<?php echo mvc::$cfg['LANG']['2'];?>]</th>
-                                    <th>车型<br/>[<?php echo mvc::$cfg['LANG']['3'];?>]</th>
-                                    <th>价格</th>
-                                    <th>添加时间</th>
+                                    <?php foreach($all as $k=>$v){ ?>
+                                    <?php if(in_array($k, $show)){ ?>
+                                    <th><?php echo $v;?></th>
+                                    <?php } ?>
+                                    <?php } ?>
+                                    
                                 </tr> 
                             </thead>
                             <tbody>
@@ -81,33 +70,86 @@
                                         <?php } ?>
                                         </div>
                                     </td>
+                                    <?php if(in_array('pro_id', $show)){ ?>
                                     <td><?php echo $v['pro_id'];?></td>
+                                    <?php } ?>
+                                    <?php if(in_array('u_realname', $show)){ ?>
                                     <td><?php echo $v['u_realname'];?></td>
+                                    <?php } ?>
+                                    <?php if(in_array('pro_status', $show)){ ?>
                                     <td class="<?php echo $proStatColor[$v['pro_status']];?>">
                                         <?php echo $proStat[$v['pro_status']];?>
                                     </td>
+                                    <?php } ?>
+                                    <?php if(in_array('img', $show)){ ?>
                                     <td>
-                                        <div class="layui-table-cell laytable-cell-1-imgUrl"><img src="<?php echo $v['imgUrl'];?>"></div>
+                                        <div class="layui-table-cell laytable-cell-1-imgUrl">
+                                            <img style="max-width: 50px;" src="<?php echo $v['imgUrl'];?>">
+                                        </div>
                                     </td>
+                                    <?php } ?>
+                                    <?php if(in_array('pro_name1', $show)){ ?>
                                     <td><?php echo $v['pro_name1'];?></td>
+                                    <?php } ?>
+                                    <?php if(in_array('pro_name2', $show)){ ?>
                                     <td><?php echo $v['pro_name2'];?></td>
+                                    <?php } ?>
+                                    <?php if(in_array('pro_name3', $show)){ ?>
                                     <td><?php echo $v['pro_name3'];?></td>
-
+                                    <?php } ?>
+                                    <?php if(in_array('pro_make1', $show)){ ?>
                                     <td><?php echo $v['pro_make1'];?></td>
+                                    <?php } ?>
+                                    <?php if(in_array('pro_make2', $show)){ ?>
                                     <td><?php echo $v['pro_make2'];?></td>
+                                    <?php } ?>
+                                    <?php if(in_array('pro_make3', $show)){ ?>
                                     <td><?php echo $v['pro_make3'];?></td>
-
+                                    <?php } ?>
+                                    <?php if(in_array('pro_model1', $show)){ ?>
                                     <td><?php echo $v['pro_model1'];?></td>
+                                    <?php } ?>
+                                    <?php if(in_array('pro_model2', $show)){ ?>
                                     <td><?php echo $v['pro_model2'];?></td>
+                                    <?php } ?>
+                                    <?php if(in_array('pro_model3', $show)){ ?>
                                     <td><?php echo $v['pro_model3'];?></td>
-
+                                    <?php } ?>
+                                    <?php if(in_array('pro_price', $show)){ ?>
                                     <td><?php echo sprintf("%.2f",$v['pro_price']);?></td>
-                                    <td><?php if(!empty($v['pro_atime'])) echo date('Y-m-d H:i:s',$v['pro_atime']);?></td>
+                                    <?php } ?>
+                                    <?php if(in_array('check_admin', $show)){ ?>
+                                        <td>
+                                            <?php if(!empty($v['pro_check_detail']['u_name'])) echo $v['pro_check_detail']['u_name'];?>
+                                            </td>
+                                    <?php } ?>
+                                    <?php if(in_array('check_time', $show)){ ?>
+                                        <td>
+                                            <?php if(!empty($v['pro_check_detail']['time'])) echo date('Y-m-d H:i:s',$v['pro_check_detail']['time']);?>
+                                            </td>
+                                    <?php } ?>
+                                    <?php if(in_array('check_remark', $show)){ ?>
+                                        <td>
+                                            <?php if(!empty($v['pro_check_detail']['remark'])) echo $v['pro_check_detail']['remark'];?>
+                                            </td>
+                                    <?php } ?>
+
+                                    <?php if(in_array('pro_atime', $show)){ ?>
+                                        <td>
+                                            <?php if(!empty($v['pro_atime'])) echo date('Y-m-d H:i:s',$v['pro_atime']);?>
+                                                
+                                            </td>
+                                    <?php } ?>
+                                    <?php if(in_array('pro_etime', $show)){ ?>
+                                        <td>
+                                            <?php if(!empty($v['pro_etime'])) echo date('Y-m-d H:i:s',$v['pro_etime']);?>
+                                            </td>
+                                    <?php } ?>
                                 </tr>
                                 <?php } ?>
                                 <?php }else{ ?>
                                     <tr>
-                                        <td colspan="15" class="warn center">无相关记录！</td>
+                                        <td colspan="<?php echo count($show);?>" class="warn center">无相关记录！</td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -148,7 +190,53 @@
 
 
 
+    <SCRIPT type="text/javascript">
+        <!--
+        var setting = {
+            check: {
+                enable: true
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            view: {
+                showIcon: false
+            },
+            callback:{
+                onCheck: selItem
+            }
+        };
 
+        var zNodes =<?php echo $ztreeNode;?>;
+        
+        
+        $(document).ready(function(){
+            $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+        });
+        
+
+        function showCol(){
+            $("#treeDemo-box").slideToggle();
+        }
+
+        function selItem(event, treeId, treeNode) {
+            // 监听分类选中
+            var treeObj = $.fn.zTree.getZTreeObj(treeId);
+            var nodes = treeObj.getCheckedNodes(true);
+            var inp = new Array();
+            var ids = new Array();
+            for (var i = nodes.length - 1; i >= 0; i--) {
+                inp.push(nodes[i].name);
+                ids.push(nodes[i].id);
+            }
+            $("#show").val(inp.toString());
+            $("#showinp").val(ids.toString());
+        }
+
+
+    </SCRIPT>
 
 
 

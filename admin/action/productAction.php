@@ -1,6 +1,7 @@
 <?php
 class productAction
 {
+
 	/**
 	 * @method    配件列表
 	 * @author    xu
@@ -12,6 +13,82 @@ class productAction
         $MainBase = new MainBase();
         $page = isset($Params['page']) ? (int)$Params['page']:1;
         $perPage = 5;
+
+        $all = [
+            'pro_id' => '产品ID',
+            'u_realname' => '发布者',
+            'pro_status' => '状态',
+            'img' => '图片',
+            'pro_name1' => '名称['.mvc::$cfg['LANG']['1'].']',
+            'pro_name2' => '名称['.mvc::$cfg['LANG']['2'].']',
+            'pro_name3' => '名称['.mvc::$cfg['LANG']['3'].']',
+            'pro_make1' => '品牌['.mvc::$cfg['LANG']['1'].']',
+            'pro_make2' => '品牌['.mvc::$cfg['LANG']['2'].']',
+            'pro_make3' => '品牌['.mvc::$cfg['LANG']['3'].']',
+            'pro_model1' => '车型['.mvc::$cfg['LANG']['1'].']',
+            'pro_model2' => '车型['.mvc::$cfg['LANG']['2'].']',
+            'pro_model3' => '车型['.mvc::$cfg['LANG']['3'].']',
+            'pro_price' => '价格',
+            'check_admin' => '审核人',
+            'check_time' => '审核时间',
+            'check_remark' => '审核备注',
+            'pro_atime' => '添加时间',
+            'pro_etime' => '最近编辑'
+        ];
+
+        if(empty($Params['show']))
+        {
+            $show = [
+                'pro_id',
+                'u_realname',
+                'pro_status',
+                'img',
+                'pro_name1',
+                // 'pro_name2',
+                // 'pro_name3',
+                'pro_make1',
+                // 'pro_make2',
+                // 'pro_make3',
+                'pro_model1',
+                // 'pro_model2',
+                // 'pro_model3',
+                'pro_price',
+                // 'check_admin',
+                // 'check_time',
+                // 'check_remark',
+                'pro_atime',
+                // 'pro_etime'
+            ];
+        }
+        else
+        {
+            $show = explode(',', $Params['show']);
+        }
+
+
+        $showWidth = [
+            'pro_id' => '90',
+            'u_realname' => '50',
+            'pro_status' => '120',
+            'img' => '100',
+            'pro_name1' => '100',
+            'pro_name2' => '100',
+            'pro_name3' => '100',
+            'pro_make1' => '100',
+            'pro_make2' => '100',
+            'pro_make3' => '100',
+            'pro_model1' => '100',
+            'pro_model2' => '100',
+            'pro_model3' => '100',
+            'pro_price' => '100',
+            'check_admin' => '100',
+            'check_time' => '50',
+            'check_remark' => '80',
+            'pro_atime' => '120',
+            'pro_etime' => '100'
+        ];
+
+
 
         // 关键字查找
         $where = '';
@@ -45,6 +122,9 @@ class productAction
         $order .= "order by pro_atime desc";
         $res = $MainBase->get('sh_product left join sh_user on u_id=pro_u_id',['sh_product.*','u_realname'],$where.$order.sprintf(" limit %d,%d",($page-1)*$perPage,$perPage));
         $base = $res['data'];
+        foreach ($base as $key => $value) {
+            $base[$key]['pro_check_detail'] = json_decode($value['pro_check_json'],true);
+        }
         // 主图
         $proIds = array_column($base, 'pro_id');
         if(!empty($proIds)){
@@ -57,6 +137,33 @@ class productAction
         }
 
         LibTpl::Set('data',$base);
+
+        $ztree = [];
+        foreach ($all as $k => $v) {
+            $ztree[] = ['id'=>$k,'name'=>$v,'checked'=>in_array($k, $show)];
+        }
+        LibTpl::Set('ztreeNode',json_encode($ztree));
+
+        // 显示列
+        LibTpl::Set('show',$show);
+        LibTpl::Set('all',$all);
+        LibTpl::Set('showWidth',$showWidth);
+        
+        $str = [];
+        $colids = [];
+        if(!empty($Params['show'])){ 
+            foreach ($all as $k => $v) {
+                if(in_array($k, $show))
+                {
+                    $str[] = $v;
+                }
+            }
+            $colids = $show;
+        }
+        LibTpl::Set('str',implode(',', $str));
+        LibTpl::Set('colids',implode(',', $colids));
+        array_pop($show);
+        LibTpl::Set('shows',$show);
 
         // 分页
         $res = $MainBase->get('sh_product',['count(*) sum'],$where,true);
@@ -243,16 +350,21 @@ class productAction
 
 
 
-
+    /**
+     * @method    产品导入
+     * @author    xu
+     * @copyright 2018-05-16
+     */
 	public function batch()
 	{
 		LibTpl::Set('title', '产品导入');
         LibTpl::Set('menu', 'batch');
 		LibTpl::Put();
 	}
+
 	/**
-	 * @method    产品导入
-	 * @author 卢
+	 * @method   批量编辑|导入产品信息
+	 * @author   卢
 	 * @copyright 2018-05-21
 	 */
 	public function impProBase()
@@ -328,8 +440,9 @@ class productAction
         }
         LibFc::ajaxJsonEncode($res);
 	}
+
 	/**
-	 * @method    图片导入
+	 * @method    批量编辑导入产品图片
 	 * @author 卢
 	 * @copyright 2018-05-21
 	 */
