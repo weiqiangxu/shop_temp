@@ -33,9 +33,13 @@ class productAction
         if(!empty($Params['status']))
             $where .= sprintf(" and pro_status ='%s' ",$Params['status']);
 
-        // 非超级管理员只能看到自己的
-        if(!$_SESSION['_super'])
+        // 工厂只能看到自己的 1管理员  2工厂 0客户
+        if($_SESSION['_style']=='2')
             $where .= sprintf(" and pro_u_id ='%s' ",$_SESSION['_userid']);
+        // 客户只能看到已经审核过的
+        if($_SESSION['_style']=='0')
+            $where .= " and pro_status =1 ";
+
 
         // 排序
         $order .= "order by pro_atime desc";
@@ -179,6 +183,7 @@ class productAction
         //获取信息
         $MainBase=new MainBase();
         $Params = mvc::$URL_PARAMS;
+        LibTpl::Set('menu', 'check');
 
         if(empty($Params['proId']) || !LibFc::Int($Params['proId']))
             LibTpl::Error('审核配件不存在！');
@@ -187,10 +192,20 @@ class productAction
         $MainProduct=new MainProduct();
         $res=$MainProduct->getProduct($Params['proId']);
         LibTpl::Set('data',$res['data']);
-        LibTpl::Set('title', '产品审核');
+        if($_SESSION['_style']==1)
+        {
+            LibTpl::Set('title', '产品审核');
+        }
+        if($_SESSION['_style']==0)
+        {
+            LibTpl::Set('title', '产品详情');
+        }
+
+        // 状态枚举 0待审 1已审核 2审核不通过
+        LibTpl::Set('proStat',['0'=>'待审','1'=>'已审核','2'=>'审核不通过']);
+        LibTpl::Set('proStatColor',['0'=>'gray','1'=>'green','2'=>'red']);
 
         LibTpl::Set('Params', $Params);
-        LibTpl::Set('menu', 'check');
         LibTpl::Put();
     }
 
@@ -207,8 +222,7 @@ class productAction
 			$Params = mvc::$URL_PARAMS;
 			if(!in_array($Params['type'], ['pro','article']))
 			{
-				$data=['code'=>1,'msg'=>'参数错误'];
-				echo json_encode($data);
+                LibFc::ajaxJsonEncode(['status'=>false,'data'=>'文件上传参数错误']);
 				exit();
 			}
 			$MainUpload=new MainUpload();
@@ -223,7 +237,7 @@ class productAction
 			{
 				$data=['code'=>1,'msg'=>$res['data']];
 			}
-			echo json_encode($data);
+			LibFc::ajaxJsonEncode($data);
 		}
 	}
 
@@ -250,14 +264,14 @@ class productAction
         $file=$_FILES['file']['tmp_name'];
         $file = iconv("utf-8", "gb2312", $file);   //转码  
         if(empty($file) OR !file_exists($file)) {  
-            echo json_encode(['code'=>1,'msg'=>'文件上传失败','status'=>false]);
+            LibFc::ajaxJsonEncode(['status'=>false,'data'=>'文件上传失败']);
             exit();  
         }  
         $objRead = new PHPExcel_Reader_Excel2007();   //建立reader对象  
         if(!$objRead->canRead($file)){  
             $objRead = new PHPExcel_Reader_Excel5();  
             if(!$objRead->canRead($file)){  
-                echo json_encode(['code'=>1,'msg'=>'文件上传失败','status'=>false]);
+                LibFc::ajaxJsonEncode(['status'=>false,'data'=>'请上传Excel类型文件']);
 	            exit();  
             }  
         }
@@ -312,7 +326,7 @@ class productAction
         		$res['code']=0;
         		break;
         }
-        echo json_encode($res);
+        LibFc::ajaxJsonEncode($res);
 	}
 	/**
 	 * @method    图片导入
@@ -321,75 +335,95 @@ class productAction
 	 */
 	public function impProImg()
 	{
-		$MainRule = new MainRule();
-        $MainRule->rule('PR10');
 		$Params = mvc::$URL_PARAMS;
-		if(!empty($Params['fileName']))
-		{
-			$zip = new ZipArchive;
-		    $MainUpload=new MainUpload();
-		    $path=mvc::$cfg['ROOT'].'file/'.$Params['fileName'];
-		    if(!file_exists($path))
-		    {
-		    	$res=[
-		    		'code'=>1,
-		    		'data'=>'文件不存在',
-		    	];
-		    	echo json_encode($res);
-		    	exit;
-		    }
-		    $info=pathinfo($path);
-		    if($info['extension']!='zip')
-		    {
-		    	$res=[
-		    		'code'=>1,
-		    		'data'=>'仅支持.zip后缀文件',
-		    	];
-		    	echo json_encode($res);
-		    	exit;
-		    }
-		    // print_r($info);
-		    // die;
-	        $res = $zip->open($path);
-	        if ($res === TRUE) 
-	        { 
-	            // $tempDir='temp'.uniqid();
-	            $tempDir=mvc::$cfg['ROOT'].'temp';
-	             //解压缩到test文件夹 
-	            $zip->extractTo($tempDir);
-	            $zip->close(); 
-	            $dir=$tempDir.'/'.$info['filename'];
-	            $file=scandir($dir);
-	            $data=[];
-	            foreach ($file as $v) 
-	            {
-	                if($v!='.'&&$v!='..')
-	                {
-	                    if(strpos($v, '@'))
-	                    {
-	                        $vArr=explode('@', $v);
-	                        $data[$vArr[0]][]=$v;
-	                    }
-	                    else
-	                    {
-	                        $vArr=explode('.', $v);
-	                        $data[$vArr[0]][]=$v;
-	                    }
-	                }
-	            }
 
-	            if(!empty($data))
-	            {
-	                $MainProduct=new MainProduct();
-	                $res=$MainProduct->impoProImgs($dir,$data);
-	                $res['code']=0;
-	            }
-	            echo json_encode($res);
-	        } else { 
-	            echo json_encode($res); 
-	        }
-		}
+		$zip = new ZipArchive;
+	    $MainUpload=new MainUpload();
+
+
+        // print_r($_FILES['file']['tmp_name']);die;
+	    // $path=mvc::$cfg['ROOT'].'file/'.$Params['fileName'];
+	    if(empty($_FILES) || !file_exists($_FILES['file']['tmp_name']))
+	    {
+            LibFc::ajaxJsonEncode(['status'=>false,'data'=>'请上传zip类型压缩文件！']);
+	    	exit;
+	    }
+        if(!($_FILES['file']['type']=='application/x-zip-compressed'))
+        {
+            LibFc::ajaxJsonEncode(['status'=>false,'data'=>'请上传zip类型压缩文件！']);
+            exit;
+        }
+        $file = $_FILES['file'];
+        $res = $zip->open($file['tmp_name']);
+        if ($res === TRUE) 
+        { 
+            // $tempDir='temp'.uniqid();
+            $tempDir = mvc::$cfg['ROOT'].'temp';
+             //解压缩到test文件夹 
+            $zip->extractTo($tempDir);
+            $zip->close();
+            $dir=$tempDir.'/'.current(explode('.', $file['name']));
+            $file=scandir($dir);
+            $data=[];
+            foreach ($file as $v) 
+            {
+                if($v!='.'&&$v!='..')
+                {
+                    if(strpos($v, '@'))
+                    {
+                        $vArr=explode('@', $v);
+                        if(!empty(current(explode('.', $vArr[1]))))
+                        {
+                            $data[$vArr[0]][current(explode('.', $vArr[1]))-1]=$v;
+                        }else{
+                            $data[$vArr[0]][]=$v;
+                        }
+                    }
+                    else
+                    {
+                        $vArr=explode('.', $v);
+                        $data[$vArr[0]][]=$v;
+                    }
+                    if(count($data[$vArr[0]])>5)
+                    {   //至多五张图
+                        array_pop($data[$vArr[0]]);
+                    }
+                }
+            }
+
+            if(!empty($data))
+            {
+                $MainProduct=new MainProduct();
+                $res=$MainProduct->impoProImgs($dir,$data,$_SESSION['_userid']);
+                $res['code']=0;
+            }
+            LibFc::ajaxJsonEncode($res);
+        } else { 
+            LibFc::ajaxJsonEncode($res);
+        }
 	}
+
+    /**
+     * @method    配件审核
+     * @author      xu
+     * @copyright 2018-05-21
+     */
+    public function ajaxCheck()
+    {
+        if($_SESSION['_style']!=1)
+            LibFc::ajaxJsonEncode(['status'=>false,'data'=>'您没有权限审核商品！']);
+
+        if(empty($_POST['data']) || !LibFc::Int($_POST['data']['pro_id']))
+            LibFc::ajaxJsonEncode(['status'=>false,'data'=>'参数错误！']);
+        $data = $_POST['data'];
+        $tmp['pro_status'] = $data['status'];
+        $tmp['pro_check_json'] = json_encode(['u_id'=>$_SESSION['_userid'],'u_name'=>$_SESSION['u_realname'],'time'=>time(), 'remark'=>$data['remark']]);
+
+        $MainBase = new MainBase();
+        $MainBase->set('sh_product',$tmp,sprintf("and pro_id=%d",$data['pro_id']));
+        
+        LibFc::ajaxJsonEncode(['status'=>true,'data'=>'操作成功！']);
+    }
 
 
 }

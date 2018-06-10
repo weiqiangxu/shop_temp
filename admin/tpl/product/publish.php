@@ -20,11 +20,11 @@
                             </tr>
                             <tr>
                               <td><?php echo mvc::$cfg['LANG'][2];?></td>
-                              <td><input type="text" name="base[pro_name2]" lay-verify="namefifter" placeholder="请输入<?php echo mvc::$cfg['LANG'][2];?>名称" value="<?php echo $data['base']['pro_name2'];?>" autocomplete="off" class="layui-input" ></td>
+                              <td><input type="text" name="base[pro_name2]" placeholder="请输入<?php echo mvc::$cfg['LANG'][2];?>名称" value="<?php echo $data['base']['pro_name2'];?>" autocomplete="off" class="layui-input" ></td>
                             </tr>
                             <tr>
                               <td><?php echo mvc::$cfg['LANG'][3];?></td>
-                              <td><input type="text" name="base[pro_name3]" lay-verify="namefifter" placeholder="请输入<?php echo mvc::$cfg['LANG'][3];?>名称" value="<?php echo $data['base']['pro_name3'];?>" autocomplete="off" class="layui-input" ></td>
+                              <td><input type="text" name="base[pro_name3]" placeholder="请输入<?php echo mvc::$cfg['LANG'][3];?>名称" value="<?php echo $data['base']['pro_name3'];?>" autocomplete="off" class="layui-input" ></td>
                             </tr>
                           </tbody>
                         </table>
@@ -47,15 +47,15 @@
                           <tbody>
                             <tr>
                               <td><?php echo mvc::$cfg['LANG'][1];?></td>
-                              <td><input type="text" name="base[pro_make1]" lay-verify="namefifter" placeholder="请输入<?php echo mvc::$cfg['LANG'][1];?>品牌" value="<?php echo $data['base']['pro_make1'];?>" autocomplete="off" class="layui-input" ></td>
+                              <td><input type="text" name="base[pro_make1]" placeholder="请输入<?php echo mvc::$cfg['LANG'][1];?>品牌" value="<?php echo $data['base']['pro_make1'];?>" autocomplete="off" class="layui-input" ></td>
                             </tr>
                             <tr>
                               <td><?php echo mvc::$cfg['LANG'][2];?></td>
-                              <td><input type="text" name="base[pro_make2]" lay-verify="namefifter" placeholder="请输入<?php echo mvc::$cfg['LANG'][2];?>品牌" value="<?php echo $data['base']['pro_make2'];?>" autocomplete="off" class="layui-input" ></td>
+                              <td><input type="text" name="base[pro_make2]" placeholder="请输入<?php echo mvc::$cfg['LANG'][2];?>品牌" value="<?php echo $data['base']['pro_make2'];?>" autocomplete="off" class="layui-input" ></td>
                             </tr>
                             <tr>
                               <td><?php echo mvc::$cfg['LANG'][3];?></td>
-                              <td><input type="text" name="base[pro_make3]" lay-verify="namefifter" placeholder="请输入<?php echo mvc::$cfg['LANG'][3];?>品牌" value="<?php echo $data['base']['pro_make3'];?>" autocomplete="off" class="layui-input" ></td>
+                              <td><input type="text" name="base[pro_make3]" placeholder="请输入<?php echo mvc::$cfg['LANG'][3];?>品牌" value="<?php echo $data['base']['pro_make3'];?>" autocomplete="off" class="layui-input" ></td>
                             </tr>
                           </tbody>
                         </table>
@@ -78,15 +78,15 @@
                           <tbody>
                             <tr>
                               <td><?php echo mvc::$cfg['LANG'][1];?></td>
-                              <td><input type="text" name="base[pro_model1]" lay-verify="namefifter" placeholder="请输入<?php echo mvc::$cfg['LANG'][1];?>车型" value="<?php echo $data['base']['pro_model1'];?>" autocomplete="off" class="layui-input" ></td>
+                              <td><input type="text" name="base[pro_model1]" placeholder="请输入<?php echo mvc::$cfg['LANG'][1];?>车型" value="<?php echo $data['base']['pro_model1'];?>" autocomplete="off" class="layui-input" ></td>
                             </tr>
                             <tr>
                               <td><?php echo mvc::$cfg['LANG'][2];?></td>
-                              <td><input type="text" name="base[pro_model2]" lay-verify="namefifter" placeholder="请输入<?php echo mvc::$cfg['LANG'][2];?>车型" value="<?php echo $data['base']['pro_model2'];?>" autocomplete="off" class="layui-input" ></td>
+                              <td><input type="text" name="base[pro_model2]" placeholder="请输入<?php echo mvc::$cfg['LANG'][2];?>车型" value="<?php echo $data['base']['pro_model2'];?>" autocomplete="off" class="layui-input" ></td>
                             </tr>
                             <tr>
                               <td><?php echo mvc::$cfg['LANG'][3];?></td>
-                              <td><input type="text" name="base[pro_model3]" lay-verify="namefifter" placeholder="请输入<?php echo mvc::$cfg['LANG'][3];?>车型" value="<?php echo $data['base']['pro_model3'];?>" autocomplete="off" class="layui-input" ></td>
+                              <td><input type="text" name="base[pro_model3]" placeholder="请输入<?php echo mvc::$cfg['LANG'][3];?>车型" value="<?php echo $data['base']['pro_model3'];?>" autocomplete="off" class="layui-input" ></td>
                             </tr>
                           </tbody>
                         </table>

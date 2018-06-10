@@ -3,7 +3,11 @@
     <button class="layui-btn layui-bg-gray" style="margin-bottom: 10px;">
         批量添加 | 编辑配件信息
     </button>
-    <button type="button" class="layui-btn" id="test1" style="margin-bottom: 10px;">
+    <button class="layui-btn layui-bg-cyan" onclick="location.href='<?php echo mvc::$cfg['HOST']['adminUrl']?>static/css/base.xls'" style="margin-bottom: 10px;">
+        <i class="layui-icon layui-icon-download-circle"></i>
+        模板下载
+    </button>
+    <button type="button" class="layui-btn" id="probase" style="margin-bottom: 10px;">
         <i class="layui-icon">&#xe67c;</i>上传Excel文件
     </button>
     <br/>
@@ -13,13 +17,16 @@
     <br/>
     <br/>
     <button class="layui-btn layui-bg-gray" style="margin-bottom: 10px;">批量更新配件图片</button>
-    <button type="button" class="layui-btn" id="test1" style="margin-bottom: 10px;">
+    <button class="layui-btn layui-bg-cyan" onclick="location.href='<?php echo mvc::$cfg['HOST']['adminUrl']?>static/css/model.zip'" style="margin-bottom: 10px;">
+        <i class="layui-icon layui-icon-download-circle"></i>
+        模板下载
+    </button>
+    <button type="button" class="layui-btn" id="piczip" style="margin-bottom: 10px;">
         <i class="layui-icon">&#xe67c;</i>上传zip压缩文件
     </button>
     <br/>
-    <img src="<?php echo mvc::$cfg['HOST']['adminUrl'].'static/images/pic.png'?>">
-    <br/>
-    <span class="gray">请将含有以上excel内容的文件和图片压缩至zip文件夹，选中zip文件夹批量更新</span>
+    <div class="gray">1、请图片压缩放置于一个文件夹中，将该文件夹压缩为zip文件夹，选中zip文件夹上传批量更新</div>
+    <div class="gray">2、图片命名使用'产品ID.png'若是排序图片则'产品ID@图片序号.jpg/png/',如果序号大于实际图片数目则自动由小到大排序。图片最多五张。</div>
 </div>
 <script>
 layui.use('upload', function(){
@@ -27,10 +34,10 @@ layui.use('upload', function(){
    
   //执行实例
   var uploadInst = upload.render({
-    elem: '#test1' //绑定元素
+    elem: '#probase' //绑定元素
     ,accept:'file'
     ,dataType:'json'
-    ,url: adminUri+'/product/impProBase?type=base' //上传接口
+    ,url: adminUri+'/product/impProBase?type=base&isAjax=1' //上传接口
     ,done: function(res){
         if(res.status){
             //上传完毕回调
@@ -43,7 +50,34 @@ layui.use('upload', function(){
         }
  
     }
+    ,error: function(){
+      //请求异常回调
+    }
   });
+
+    //执行实例
+  var uploadInstPic = upload.render({
+    elem: '#piczip' //绑定元素
+    ,accept:'file'
+    ,dataType:'json'
+    ,url: adminUri+'/product/impProImg?type=base&isAjax=1' //上传接口
+    ,done: function(res){
+        if(res.status){
+            //上传完毕回调
+            layer.open({
+              title: '温馨提示'
+              ,content: '操作成功！'
+            });   
+        }else{
+            layer.alert(res.data, {icon: 5,title:'温馨提示'});
+        }
+ 
+    }
+    ,error: function(){
+      //请求异常回调
+    }
+  });
+
 });
 </script>
 <?php include_once(mvc::$cfg['PATH_TPL'].'public/footBase.php');?>

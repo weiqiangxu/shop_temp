@@ -34,8 +34,8 @@
 <ul class="layui-nav" lay-filter="">
     <!--客户菜单-->
     <?php if($_SESSION['_style']=='0'){ ?>
-    <li class="layui-nav-item <?php if($menu=='member'){echo 'layui-this';}?>">
-        <a href="<?php echo mvc::$cfg['HOST']['adminUri'];?>product/search">产品查询</a>
+    <li class="layui-nav-item <?php if($menu=='list'){echo 'layui-this';}?>">
+        <a href="<?php echo mvc::$cfg['HOST']['adminUri'];?>product/list">产品查询</a>
     </li>
     <?php } ?>
     <!--管理员菜单-->
@@ -44,7 +44,7 @@
         <a href="<?php echo mvc::$cfg['HOST']['adminUri'];?>product/list">产品列表</a>
     </li>
     <li class="layui-nav-item <?php if($menu=='check'){echo 'layui-this';}?>">
-        <a href="<?php echo mvc::$cfg['HOST']['adminUri'];?>product/check">产品审核</a>
+        <a href="javascript:;">产品审核</a>
     </li>
     <?php if($_SESSION['_super']){ ?>
     <li class="layui-nav-item <?php if($menu=='sys'){echo 'layui-this';}?>" >

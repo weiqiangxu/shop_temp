@@ -4,69 +4,7 @@
  */
 class MainProduct extends MainBase
 {
-	private $table='sh_product';
-
-	/**不存在的产品将加入购物车**/
-	public function getCartProdes($proIdArr, $uid)
-	{
-		$proArr = [];
-		$uid = (int) $uid;
-		$res = $this->get('sh_user', ['u_ul_id'], sprintf(" and u_id=%d and u_status=1 and u_order=1", $uid), true);
-		$priceLevel = (int) $res['data']['u_ul_id'];
-
-		if(!empty($proIdArr))
-		{
-			$this->MainDb->Begin();
-			$res = $this->get('sh_cart', ['car_pro_id'], sprintf(" and car_u_id=%d and car_pro_id in(%s)", $uid, implode(',', $proIdArr)));
-			$hasIdArr = array_column($res['data'], 'car_pro_id');
-			$newProArr = array_diff($proIdArr, $hasIdArr);
-			foreach($newProArr as $proId)
-			{
-				$addArr = [
-					'car_u_id'=>$uid,
-					'car_pro_id'=>$proId,
-					'car_count'=>1,
-					'car_checked'=>1,
-				];
-				$this->add('sh_cart', $addArr);
-			}
-			$this->MainDb->End();
-			$where = sprintf(" and car_u_id=%d and car_pro_id in(%s) order by car_id", $uid, implode(',', $proIdArr));
-		}
-		else
-		{
-			$where = sprintf(" and car_u_id=%d  order by car_id", $uid);
-		}
-
-		$table = sprintf("sh_cart 
-		join sh_product on pro_id=car_pro_id and car_u_id=%d 
-		left join sh_part on part_id=pro_part_id
-		join sh_product_number on prn_pro_id=pro_id and prm_self=1", $uid);
-		$res = $this->get($table, ['pro_id, part_name, pro_lab1,pro_url,pro_name, prn_show, pro_price, pro_price_vip1, pro_price_vip2, pro_price_vip3, pro_price_vip4,car_id, car_count, car_checked'], $where);
-		$proArr = [];
-		if(!empty($res['data']))
-		{
-			foreach($res['data'] as $v)
-			{
-				$v['pro_price'] = $v['pro_price_vip'.$priceLevel] > 0 && $v['pro_price_vip'.$priceLevel] < $v['pro_price'] ? $v['pro_price_vip'.$priceLevel]: $v['pro_price'];
-				$proArr[$v['pro_id']] = $v;
-			}
-			//图片
-			$MainProduct = new MainProduct();
-			$res = $MainProduct->getProductMainPic(array_keys($proArr));
-			foreach($res['data'] as $k=>$v)
-			{
-				$proArr[$k]['img'] = $v;
-			}
-		}
-		
-		return LibFc::ReturnData(true, $proArr);
-	}
-	
-	
-	
-	
-	
+	public $table = 'sh_product';
 	/**
 	  * @method 修改或添加产品
 	  * @author xu
@@ -325,110 +263,7 @@ class MainProduct extends MainBase
 		$this->MainDb->End();
 		return LibFc::ReturnData(true);
 	}
-	/**
-	 * @method    修改分类
-	 * @param    arr dataArr['parent'=>[-1=>11111],['child'=>[-1=>[1=>111,2=>2222]]],['label'=>[-1=>[1]=>[1=>111,2=>22]]]]
-	 * @author 卢
-	 * @copyright 2018-05-17
-	 */
-	public function setProductPart($dataArr)
-	{
-		if(is_array($dataArr))
-		{
-			//获取原来的分类
-			$res=$this->get('sh_part',['part_id']);
-			$oriArr=array_column($res['data'], 'part_id');
-			$editArr=!empty($dataArr['parent'])?array_keys($dataArr['parent']):[];
-			if(!empty($dataArr['child']))
-			{
-				foreach ($dataArr['child'] as $v) 
-				{
-					if(!empty($v))
-					{
-						$editArr=array_merge($editArr,array_keys($v));
-					}
-				}
-			}
-			$delArr=array_diff($oriArr, $editArr);
-			$this->MainDb->Begin();
-			if(!empty($dataArr['parent']))
-			{
-				foreach ($dataArr['parent'] as $k => $v) 
-				{
-					if(!empty($v))
-					{
-						$pArr=[
-							'part_name'=>$v,
-							'part_parent'=>0,
-							'part_art_id'=>(!empty($dataArr['artParent'][$k])?$dataArr['artParent'][$k]:0)
-						];
-						// print_r($pArr);
-						// die;
-						if($k>0)
-						{
-							$this->set('sh_part',$pArr,sprintf(' and part_id=%d',$k));
-							$pId=$k;
-						}else
-						{
-							$res=$this->add('sh_part',$pArr);
-							$pId=$res['data'];
-						}
-						//二级
-						if(!empty($dataArr['plabel'][$k]))
-						{
-							$lArr=[];
-							foreach ($dataArr['plabel'][$k] as $la => $lav) 
-							{
-								$lArr['part_lab'.$la]=$lav;
-							}
-							$this->set('sh_part',$lArr,sprintf(' and part_id=%d',$k));
-						}
 
-						if(!empty($dataArr['child'][$k]))
-						{
-							foreach ($dataArr['child'][$k] as $i => $j) 
-							{
-								if(!empty($j))
-								{
-									$cArr=[
-										'part_name'=>$j,
-										'part_parent'=>$pId,
-										'part_art_id'=>(!empty($dataArr['art'][$k][$i])?$dataArr['art'][$k][$i]:0)
-									];							
-									if(!empty($dataArr['label'][$k][$i]))
-									{
-										foreach ($dataArr['label'][$k][$i] as $la => $lav) 
-										{
-											$cArr['part_lab'.$la]=$lav;
-										}
-									}
-									if($i>0)
-									{
-										$this->set('sh_part',$cArr,sprintf(' and part_id=%d',$i));
-										$cid=$i;
-									}
-									else
-									{
-										$res=$this->add('sh_part',$cArr);
-										$cid=$res['data'];
-									}
-								}
-							}
-						}
-						// echo 123;
-						// die;
-					}
-				}
-			}
-			if(!empty($delArr))
-			{
-				$this->del('sh_part',sprintf(' and part_id in(%s)',implode(',',$delArr)));
-			}
-			$this->MainDb->End();
-			return LibFc::ReturnData(true, true);
-		}
-		return LibFc::ReturnData(false, 'setProductPart 提供的参数不正确');
-	}
 	/**
 	 * @method    获取产品图片
 	 * @param     [产品ID]        $proId [int?arr]
@@ -511,6 +346,7 @@ class MainProduct extends MainBase
 			//基本信息
 			$res=$this->get('sh_product',['*'],sprintf(' and pro_id=%d',$proId),true);
 			$dataArr['base']=$res['data'];
+			$dataArr['base']['pro_check_detail']=json_decode($res['data']['pro_check_json'],true);
 			//号码
 			$res=$this->get('sh_product_number',['*'],sprintf(' and prn_pro_id=%d',$proId));
 			$dataArr['nums']=$res['data'];
@@ -749,140 +585,14 @@ class MainProduct extends MainBase
 		}
 		return LibFc::ReturnData(false, 'impoProBase 提供的参数不正确');
 	}
-	/**
-	 * @method    产品数量导入
-	 * @param     [arr]       $data [读取到的excel数据]
-	 * @return    [bool]           []
-	 * @author 卢
-	 * @copyright 2018-05-21
-	 */
-	public function impoProNum($data)
-	{
-		if(!empty($data))
-		{
-			foreach ($data as $v) 
-			{
-				if(!empty(trim($v['A'])))
-				{
-					$where=sprintf(" and pro_wl_code='%s'",trim($v['A']));
-				}else if(!empty(trim($v['B'])))
-				{
-					$where=sprintf(" and pro_code='%s'",trim($v['B']));
-				}else
-				{
-					continue;
-				}
-				$this->set($this->table,['pro_count'=>(int)$v['C']],$where);
-			}
-			return LibFc::ReturnData(true, true);
-		}
-		return LibFc::ReturnData(false, 'impoProNum 提供的参数不正确');
-	}
-	/**
-	 * @method    车型导入
-	 * @param     [arr]       $data [读取到的excel数据]
-	 * @return    [bool]             []
-	 * @author 卢
-	 * @copyright 2018-05-21
-	 */
-	public function impoProModel($data)
-	{
-		if(!empty($data))
-		{
-			$modArr=[];
-			$this->MainDb->Begin();
-			foreach ($data as $v) 
-			{
-				$dataArr=[];
-				$v['B']=str_replace('（', '(', $v['B']);
-				$v['B']=str_replace('）', ')', $v['B']);
-				preg_match('/^(.*\s?\S?)\((.*\s?\S?)\)$/', $v['B'],$temp);
-				$dataArr=[
-					'mod_brand'=>(!empty($temp[1])?$temp[1]:''),
-					'mod_make'=>(!empty($temp[2])?$temp[2]:''),
-					'mod_name'=>trim($v['C']),
-					'mod_engine'=>trim($v['D']),
-					'mod_ml'=>trim($v['E']),
-					'mod_kw'=>trim($v['F']),
-					'mod_cylinder'=>trim($v['G']),
-					'mod_fuel'=>trim($v['H']),
-					'mod_start'=>trim($v['I']),
-					'mod_end'=>trim($v['J']),
-					'mod_drive'=>trim($v['K']),
-				];
-				$code=md5(implode('', $dataArr));
-				//根据唯一标识码查车型
-				$res=$this->get('sh_model',['mod_id'],sprintf(" and mod_code='%s'",$code),true);
-				if(empty($res['data']))
-				{
-					$dataArr['mod_brand_code']=(!empty($temp[1])?LibFc::GetInitial($temp[1]):'');
-					$dataArr['mod_code']=$code;
-					$res=$this->add('sh_model',$dataArr);
-					$modId=$res['data'];
-				}
-				else
-				{
-					$modId=$res['data']['mod_id'];
-				}
-				$proDataArr=[];
-				$res=$this->get('sh_product',['pro_id'],sprintf(" and pro_code='%s'",trim($v['A'])),true);
-				
-				if(!empty($res['data']))
-				{
-					$proId=$res['data']['pro_id'];
-					
-					$proDataArr=[
-						'prm_start'=>trim($v['L']),
-						'prm_end'=>trim($v['M']),
-						'prm_engine'=>trim($v['N'])
-					];
-					$res=$this->get('sh_product_model',['prm_id'],sprintf(' and prm_pro_id=%d and prm_mod_id=%d',$proId,$modId));
-					if(!empty($res['data']))
-					{
-						$modArr[$proId][]=$modId;
-						$this->set('sh_product_model',$proDataArr,sprintf(' and prm_mod_id=%d',$modId));
-					}
-					else
-					{
-						$modArr[$proId][]=$modId;
-						$proDataArr['prm_mod_id']=$modId;
-						$proDataArr['prm_pro_id']=$proId;
-						$this->add('sh_product_model',$proDataArr);
-					}
-				}
-			}
-			if(!empty($modArr))
-			{
-				$proArr=array_keys($modArr);
-				$res=$this->get('sh_product_model',['*'],sprintf(' and prm_pro_id in (%s)',implode(',',$proArr)));
-				$orData=[];
-				if(!empty($res['data']))
-				{
-					foreach ($res['data'] as $v) 
-					{
-						$orData[$v['prm_pro_id']][]=$v['prm_mod_id'];
-					}
-					foreach ($proArr as $proId) 
-					{
-						$delArr=array_diff($orData[$proId], $modArr[$proId]);
-						if(!empty($delArr))
-						{
-							$this->del('sh_product_model',sprintf( 'and prm_pro_id=%d and prm_mod_id in(%s)',$proId,implode(',',$delArr)));
-						}
-					}
-				}
-			}
-			$this->MainDb->End();
-			return LibFc::ReturnData(true, true);
-		}
-		return LibFc::ReturnData(false, 'impoProModel 提供的参数不正确');
-	}
+
+
 	/**
 	 * @method    导入图片
 	 * @param     [压缩包解压目录]      $dir  []
 	 * @param     [arr]      $data [Array
 									(
-									    [4147A12A04] => Array
+									    [123321] => Array
 									        (
 									            [0] => 1.jpg
 									            [1] => 2.jpg
@@ -896,9 +606,9 @@ class MainProduct extends MainBase
 	 * @author 卢
 	 * @copyright 2018-05-21
 	 */
-	public function impoProImgs($dir,$data)
+	public function impoProImgs($dir,$data,$uid)
 	{
-		if(!empty($data)&&!empty($dir))
+		if(!empty($data)&&!empty($dir)&&LibFc::Int($uid))
 		{
 			// print_r($data);
 			// die;
@@ -906,7 +616,7 @@ class MainProduct extends MainBase
 			$MainUpload=new MainUpload();
 			foreach ($data as $code=> $file) 
 			{
-				$res=$this->get('sh_product',['pro_id'],sprintf(" and pro_code='%s'",$code),true);
+				$res=$this->get('sh_product',['pro_id'],sprintf(" and pro_id=%d and pro_u_id=%d",$code,$uid),true);
 				if(!empty($res['data']['pro_id']))
 				{
 					$proId=$res['data']['pro_id'];
@@ -921,14 +631,14 @@ class MainProduct extends MainBase
 	                		'tmp_name'=>$dir.'/'.$v,
 	                		'data'=>1
 	                	];
-	                	// print_r($fileArr);
-	                	// die;
+	                	
 	                    $res=$MainUpload->uploadFile($fileArr,'pro','image');
 	                    if($res['status']&&!empty($res['data']['prp_path']))
 	                    {
 	                    	@unlink($fileArr['tmp_name']);
 	                    	$temp=$res['data'];
-	                    	if(!empty($imgArr))
+
+	                    	if(!empty($imgArr[$k]))
 	                    	{
 	                    		$dataArr[$imgArr[$k]['prp_id']]=[
 									'prp_path'=>$temp['prp_path'],
@@ -949,7 +659,6 @@ class MainProduct extends MainBase
 	                    	}
 	                    }
 					}
-					// print_r($dataArr);
 					$this->setProPic($dataArr,$proId);
 				}
 			}
@@ -961,284 +670,9 @@ class MainProduct extends MainBase
 		}
 		else
 		{
-			
 			LibDir::DeleteDir(mvc::$cfg['ROOT'].'/temp');
 			return LibFc::ReturnData(false, 'impoProImgs 提供的参数不正确');
 		}
 	}
-	public function setModel($modId,$proId)
-	{
-		if(!empty($modId)&&!empty($proId))
-		{
-			$res=$this->get('sh_product_model',['prm_mod_id','prm_id'],sprintf(' and prm_pro_id=%d',$proId),true);
-			if(!empty($res['data']))
-			{
-				if($modId!=$res['data']['prm_mod_id'])
-				{
-					$dataArr=[
-						'prm_mod_id'=>$modId,
-						'prm_start'=>'',
-						'prm_end'=>'',
-						'prm_engine'=>''
-					];
-					$this->set('sh_product_model',$dataArr,sprintf(' and prm_id=%d',$res['data']['prm_id']));
-				}
-			}
-			else
-			{
-				$this->add('sh_product_model',['prm_pro_id'=>$proId,'prm_mod_id'=>$modId]);
-			}
-			return LibFc::ReturnData(true, true);
-		}
-		return LibFc::ReturnData(false, 'setModel 提供的参数不正确');
-	}
-		/**
-	 * @method    字符串转正则
-	 * @param     [str]     $preg [4147A12A##]
-	 * @return    [arr]           ['preg'=>'/^(\d\d\d\d\w\d\d\w)\w{2}$/','replace'=>'${1}**']
-	 * @author 卢
-	 * @copyright 2018-05-22
-	 */
-	function strToPreg($preg)
-	{
-		$sData='/^';
-		$aim='';
-		$aIndex=1;
-		$exArr=['.','*','^','&','?','\\'];
-		if(strpos($preg, '#')!==false)
-		{
-			if(strpos($preg, '#')!==0)
-			{
-				$str1='('.substr($preg, 0,strpos($preg, '#')).')';
-				$aim.='${'.$aIndex.'}';
-				$aIndex++;
-				for($i=0;$i<strlen($str1);$i++){
-					if($str1{$i}==1){
-						$sData.='\\d';
-					}else if($str1{$i}==='A'){
-						$sData.='\\w';
-					}else if(in_array($str1{$i}, $exArr)){
-						$sData.='\\'.$str1{$i};
-					}
-					else{
-						$sData.=$str1{$i};
-					}
-				}
-				$str2=substr($preg, strpos($preg, '#'));
-			}else{
-				$str2=$preg;
-			}
-			
-			while (strpos($str2, '#')!==false) {
-				$num=substr_count($str2, '#');
-				$wNum=0;
-				$index=0;
-				
-				for($i=0;$i<$num;$i++){
-					if($str2{$i}=='#'){
-						$wNum++;
-					}
-					if(empty($str2{$i+1})||$str2{$i+1}!='#'){
-						$index=$i;
-						break;
-					}
-				}
-				$sData.='\w{'.$wNum.'}';
-				$aim.=str_repeat(' ', $wNum);
-				$str2=substr($str2, $index+1);//-11-1#-1##A
-				if(strpos($str2, '#')!==false){
-					$aim.='${'.$aIndex.'}';
-					$aIndex++;
-					$temp='('.substr($str2, 0,strpos($str2, '#')).')';//-11-1
-					for($i=0;$i<strlen($temp);$i++){
-						if($temp{$i}==1){
-							$sData.='\\d';
-						}else if($temp{$i}==='A'){
-							$sData.='\\w';
-						}else if(in_array($temp{$i}, $exArr)){
-							$sData.='\\'.$temp{$i};
-						}
-						else{
-							$sData.=$temp{$i};
-						}
-					}
-					$str2=substr($str2, strpos($str2, '#'));
-				}
-			}
-		}else{
-			$str2=$preg;
-		}
-		if(strlen($str2))
-		{
-			$aim.='${'.$aIndex.'}';
-			$str2='('.$str2.')';
-			for($i=0;$i<strlen($str2);$i++){
-				if($str2{$i}==1){
-					$sData.='\\d';
-				}else if($str2{$i}==='A'){
-					$sData.='\\w';
-				}else if(in_array($str2{$i}, $exArr)){
-					$sData.='\\'.$str2{$i};
-				}
-				else{
-					$sData.=$str2{$i};
-				}
-			}
-		}
-		$sData.='$/';
-		return ['preg'=>$sData,'replace'=>$aim];
-	}
-	/**
-	 * @method    根据自编号转换为显示号码
-	 * @param     [str]     $numStr [4147A12A04]
-	 * @return    [arr]             [['status'=>true,'data'=>'4147A12A**']]
-	 * @author 卢
-	 * @copyright 2018-05-22
-	 */
-	public function pregStr($numStr)
-	{
-		$path=mvc::$cfg['ROOT'].'mod_main/lib/show.cofig.php';
-		if(file_exists($path))
-		{
-			$rule=include($path);
-			if(!empty($rule))
-			{
-				$ruleArr=[];
-				foreach ($rule as $v) 
-				{
-					$ruleArr[]=$this->strToPreg($v);
-				}
-				if(!empty($ruleArr))
-				{
-					foreach ($ruleArr as $v) 
-					{
-						if(preg_match($v['preg'],$numStr))
-						{
-							$numStr=preg_replace($v['preg'], $v['replace'], $numStr);
-							break;
-						}
-					}
-				}
-				// print_r($ruleArr);
-			}
-		}
-		return LibFc::ReturnData(true, $numStr);
-	}
-	/**
-	 * @method    刷新自编号
-	 * @author 卢
-	 * @copyright 2018-05-22
-	 */
-	public function refreshNum()
-	{
-		$res=$this->get('sh_product_number',['*'],' and prm_self=1');
-		if(!empty($res['data']))
-		{
-			foreach ($res['data'] as $v) 
-			{
-				$showNum=$this->pregStr($v['prn_display']);
-				$dataArr=['prn_show'=>$showNum['data']];
-				$this->set('sh_product_number',$dataArr,sprintf(' and prn_id=%d',$v['prn_id']));
-			}
-		}
-		return LibFc::ReturnData(true, true);
-	}
-	/**
-	 * @method    获取销量top
-	 * @param     int    $limit [限定条数]
-	 * @return    [arr]            [0] => Array([count] => 1 [pro_name] => 报警器)
-	 * @author 卢
-	 * @copyright 2018-05-23
-	 */
-	public function getSaleTop($limit=10)
-	{
-		$where=' and ord_status>0 group by orp_pro_id order by count desc limit '.$limit;
-		$res=$this->get('sh_order left join sh_order_product on ord_id=orp_ord_id inner join sh_product on pro_id=orp_pro_id',['orp_pro_id','count(1) count'],$where);
-		$saleArr=$res['data'];
-		// print_r($res);
-		$data=[];
-		$proIdArr=array_column($saleArr, 'orp_pro_id');
-		if(!empty($saleArr))
-		{
-			$res=$this->get('sh_product',['pro_name','pro_id'],sprintf(' and pro_id in(%s)',implode(',',$proIdArr)));
-			$proArr=array_column($res['data'],null, 'pro_id');
-			foreach ($saleArr as $v) 
-			{
-				$data[]=['count'=>$v['count'],'pro_name'=>$proArr[$v['orp_pro_id']]['pro_name']];
-			}
-		}
-		if(count($proIdArr)<$limit)
-		{
-			$where=(count($proIdArr))?sprintf(' and pro_id not in(%s) order by pro_id desc',implode(',',$proIdArr)):' order by pro_id desc';
-			$res=$this->get('sh_product',['pro_name','pro_id'],$where);
-			if(!empty($res['data']))
-			{
-				foreach ($res['data'] as $v) 
-				{
-					$data[]=['pro_name'=>$v['pro_name'],'count'=>0];
-				}
-			}
-		}
 
-		return LibFc::ReturnData(true, $data);
-	}
-	/**
-	 * @method    获取浏览量TOP
-	 * @param     Int    $limit [description]
-	 * @return    [arr]            [description]
-	 * @author 卢
-	 * @copyright 2018-05-25
-	 */
-	public function getViewTop($limit=10)
-	{
-		$where=' order by pro_view desc';
-		$where.=sprintf(' limit %d',$limit);
-		$res=$this->get('sh_product',['pro_name','pro_id','pro_view'],$where);
-		return $res;
-	}
-	/**
-	 * @method    获取收藏量TOP
-	 * @param     Int    $limit [description]
-	 * @return    [arr]            [description]
-	 * @author 卢
-	 * @copyright 2018-05-25
-	 */
-	public function getCollTop($limit=10)
-	{
-		$where=' group by sc_pro_id order by count desc';
-		$where.=sprintf(' limit %d',$limit);
-		$res=$this->get('sh_user_coll inner join sh_product on pro_id=sc_pro_id',['sc_pro_id','count(1) count'],$where);
-		$proIdArr=$res['data'];
-		$data=[];
-		$proId=array_column($proIdArr, 'sc_pro_id');
-		if(!empty($proIdArr))
-		{
-			$res=$this->get('sh_product',['pro_name','pro_id'],sprintf(' and pro_id in(%s)',implode(',', $proId)));
-			$proArr=array_column($res['data'],null, 'pro_id');
-			foreach ($proIdArr as $v) 
-			{
-				$data[]=['pro_name'=>$proArr[$v['sc_pro_id']]['pro_name'],'count'=>$v['count']];
-			}
-		}
-		if(count($proId)<$limit)
-		{
-			$where=(count($proId))?sprintf(' and pro_id not in(%s) order by pro_id desc',implode(',', $proId)):' order by pro_id desc';
-			$res=$this->get('sh_product',['pro_name','pro_id'],$where);
-			if(!empty($res['data']))
-			{
-				foreach ($res['data'] as $v) 
-				{
-					$data[]=['pro_name'=>$v['pro_name'],'count'=>0];
-				}
-			}
-		}
-		return LibFc::ReturnData(true, $data);
-	}
-	public function getBuyerTop($limit=10)
-	{
-		$where=' and ord_status>0 group by ord_u_id order by count desc';
-		$where.=sprintf(' limit %d',$limit);
-		$res=$this->get('sh_order left join sh_user a on u_id=ord_u_id',['sum(ord_money) count','ord_u_id','a.*'],$where);
-		return $res;
-	}
 }

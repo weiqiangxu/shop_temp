@@ -106,7 +106,7 @@ class sysAction
         // meta 
         LibTpl::Set('menu','sys');
         LibTpl::Set('Params',$Params);
-        LibTpl::Set('title', '账户列表-'.mvc::$cfg['shopName']);
+        LibTpl::Set('title', '账户列表');
         LibTpl::Put();
     }
 
@@ -167,7 +167,7 @@ class sysAction
         // meta 
         LibTpl::Set('Params',$Params);
         LibTpl::Set('menu','sys');
-        LibTpl::Set('title', '管理员列表-'.mvc::$cfg['shopName']);
+        LibTpl::Set('title', '管理员列表');
         LibTpl::Put();
     }
 
@@ -188,7 +188,7 @@ class sysAction
             // 保存更新
             $data = $_POST['data'];
             $MainUser = new MainUser();
-            $MainUser->setUser($data,$Params['id']);
+            $MainUser->setUser(array_filter($data),$Params['id']);
             header('Location:'.mvc::$cfg['HOST']['adminUri'].'sys/setUser?id='.$Params['id']);
             exit;
         }

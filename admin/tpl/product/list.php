@@ -11,6 +11,7 @@
                                 <input class="layui-input" lay-tips="品牌、车型、名称模糊查找" name="name" value="<?php echo $Params['name'];?>" autocomplete="off">
                                 </div>
                                 &nbsp;
+                                <?php if($_SESSION['_style']!='0'){ ?>
                                 状态：
                                 <div class="layui-inline">
                                     <select name="status" class="layui-inline">
@@ -20,6 +21,7 @@
                                         <option value="2" <?php if($Params['status']=='2'){echo 'selected';}?>>审核不通过</option>
                                     </select>
                                 </div>
+                                <?php } ?>
                                 &nbsp;
                                 <button class="layui-btn" type="submit" data-type="reload">搜索</button>
                             </div>
@@ -29,7 +31,7 @@
                                 <col width="90">
                                 <col width="50">
                                 <col width="120">
-                                <col width="120">
+                                <col width="160">
                                 <col width="100">
                                 <col width="100">
                                 <col>
@@ -69,11 +71,13 @@
                                 <tr>
                                     <td>
                                         <div class="layui-table-cell laytable-cell-1-10">
-                                        <?php if(!$_SESSION['_super']){ ?>
+                                        <?php if($_SESSION['_style']=='2'){ ?>
                                         <a class="layui-btn layui-btn-xs" href="<?php echo mvc::$cfg['HOST']['adminUri'];?>product/publish?proId=<?php echo $v['pro_id'];?>">编辑</a>
                                         <a class="layui-btn layui-btn-danger layui-btn-xs" onclick='product.del("<?php echo $v['pro_id'];?>")'>删除</a>
-                                        <?php }else{ ?>
+                                        <?php }elseif($_SESSION['_style']=='1'){ ?>
                                         <a class="layui-btn layui-btn-xs" href="<?php echo mvc::$cfg['HOST']['adminUri'];?>product/check?proId=<?php echo $v['pro_id'];?>">审核</a>
+                                        <?php }elseif($_SESSION['_style']=='0'){ ?>
+                                        <a class="layui-btn layui-btn-xs" href="<?php echo mvc::$cfg['HOST']['adminUri'];?>product/check?proId=<?php echo $v['pro_id'];?>">查看</a>
                                         <?php } ?>
                                         </div>
                                     </td>
