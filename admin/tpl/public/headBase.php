@@ -24,7 +24,6 @@
 
     <!-- ztree start -->
     <link rel="stylesheet" href="<?php echo mvc::$cfg['HOST']['adminUrl'];?>static/zTree_v3-master/css/zTreeStyle/zTreeStyle.css" type="text/css">
-    <script type="text/javascript" src="<?php echo mvc::$cfg['HOST']['adminUrl'];?>static/zTree_v3-master/js/jquery-1.4.4.min.js"></script>
     <script type="text/javascript" src="<?php echo mvc::$cfg['HOST']['adminUrl'];?>static/zTree_v3-master/js/jquery.ztree.core.js"></script>
     <script type="text/javascript" src="<?php echo mvc::$cfg['HOST']['adminUrl'];?>static/zTree_v3-master/js/jquery.ztree.excheck.js"></script>
     <!-- ztree end -->

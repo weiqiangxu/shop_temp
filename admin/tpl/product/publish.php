@@ -252,7 +252,7 @@ layui.use('upload', function(){
       elem: '.pro-img',
       accept:'images',
       acceptMime:'image/*',
-      url:adminUri+'product/upload?type=pro'
+      url:adminUri+'product/upload?type=pro&isAjax=1'
       ,done: function(res, index, upload){
         var item = this.item;
         item.parent('.layui-upload').find('img').attr('src',res['data']['src']);
