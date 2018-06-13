@@ -2,93 +2,119 @@
 class productAction
 {
 
-	/**
-	 * @method    配件列表
-	 * @author    xu
-	 * @copyright 2018-05-16
-	 */
-    function list()
+    /**
+     * @method    配件列表
+     * @author    xu
+     * @copyright 2018-05-16
+     */
+    function productList()
     {
         $Params = mvc::$URL_PARAMS;
+        if(!empty($Params['lang']))
+        {
+            if(!in_array($Params['lang'], array_keys(mvc::$cfg['LANG'])))
+            {
+                $Params['lang'] = 1;
+            }
+        }else{
+            $Params['lang'] = 1;
+        }
+
         $MainBase = new MainBase();
         $page = isset($Params['page']) ? (int)$Params['page']:1;
-        $perPage = 5;
-
+        $perPage = 20;
+        // 全部显示列
         $all = [
             'pro_id' => '产品ID',
-            'u_realname' => '发布者',
             'pro_status' => '状态',
             'img' => '图片',
-            'pro_name1' => '名称['.mvc::$cfg['LANG']['1'].']',
-            'pro_name2' => '名称['.mvc::$cfg['LANG']['2'].']',
-            'pro_name3' => '名称['.mvc::$cfg['LANG']['3'].']',
-            'pro_make1' => '品牌['.mvc::$cfg['LANG']['1'].']',
-            'pro_make2' => '品牌['.mvc::$cfg['LANG']['2'].']',
-            'pro_make3' => '品牌['.mvc::$cfg['LANG']['3'].']',
-            'pro_model1' => '车型['.mvc::$cfg['LANG']['1'].']',
-            'pro_model2' => '车型['.mvc::$cfg['LANG']['2'].']',
-            'pro_model3' => '车型['.mvc::$cfg['LANG']['3'].']',
-            'pro_price' => '价格',
-            'check_admin' => '审核人',
+            'pro_name' => '名称['.mvc::$cfg['LANG'][$Params['lang']].']',
+			'pro_price' => '价格(元)',
+            'pro_make' => '品牌['.mvc::$cfg['LANG'][$Params['lang']].']',
+			'pro_model' => '车型['.mvc::$cfg['LANG'][$Params['lang']].']',
+            'u_company' => '公司',
+            'u_mobile' => '手机',
+            'u_tel' => '电话',
+			'check_admin' => '审核人',
             'check_time' => '审核时间',
             'check_remark' => '审核备注',
             'pro_atime' => '添加时间',
-            'pro_etime' => '最近编辑'
+            'pro_etime' => '最近编辑',
         ];
 
         if(empty($Params['show']))
         {
+            // 默认显示
             $show = [
                 'pro_id',
-                'u_realname',
                 'pro_status',
                 'img',
-                'pro_name1',
-                // 'pro_name2',
-                // 'pro_name3',
-                'pro_make1',
-                // 'pro_make2',
-                // 'pro_make3',
-                'pro_model1',
-                // 'pro_model2',
-                // 'pro_model3',
+                'pro_name',
+                'pro_make',
+                'pro_model',
                 'pro_price',
-                // 'check_admin',
-                // 'check_time',
-                // 'check_remark',
-                'pro_atime',
-                // 'pro_etime'
+                'u_company',          
+                'u_mobile',
+				'pro_atime'
             ];
         }
         else
         {
             $show = explode(',', $Params['show']);
+            // $show = array_reverse($show);
         }
 
 
+        if($_SESSION['_style']=='0')
+        {
+            // 客户不查看审核信息
+            // 限制选中
+            unset($all['check_admin']);
+            unset($all['check_time']);
+            unset($all['check_remark']);
+            unset($all['pro_status']);
+            unset($all['pro_id']);
+            // 限制显示
+            $no = ['pro_status','pro_id'];
+            foreach ($show as $k=>$v)
+            {
+                if (in_array($v, $no))
+                    unset($show[$k]);
+            }
+        }
+
+        if($_SESSION['_style']=='2')
+        {
+            // 管理员不需要发布者信息
+            unset($all['u_company']);
+            unset($all['u_mobile']);
+            unset($all['u_tel']);
+            // 限制显示
+            $no = ['u_company','u_mobile','u_tel'];
+            foreach ($show as $k=>$v)
+            {
+                if (in_array($v, $no))
+                    unset($show[$k]);
+            }
+        }
+
+        // 列宽控制
         $showWidth = [
-            'pro_id' => '60',
-            'u_realname' => '50',
-            'pro_status' => '95',
-            'img' => '85',
-            'pro_name1' => '95',
-            'pro_name2' => '95',
-            'pro_name3' => '95',
-            'pro_make1' => '95',
-            'pro_make2' => '95',
-            'pro_make3' => '95',
-            'pro_model1' => '95',
-            'pro_model2' => '95',
-            'pro_model3' => '95',
-            'pro_price' => '45',
-            'check_admin' => '100',
-            'check_time' => '50',
-            'check_remark' => '80',
-            'pro_atime' => '120',
-            'pro_etime' => '100'
+            'pro_id' => 50,
+            'pro_status' => 60,
+            'img' =>60,
+            'pro_name' => 180,
+            'pro_make' => 180,
+            'pro_price' => 60,
+            'check_admin' => 110,
+            'check_time' => 150,
+            'check_remark' => 160,
+            'u_company' => 180,
+            'u_mobile' => 60,
+            'u_tel' => 60,
+            'pro_atime' => 120,
+            'pro_etime' => 120,
         ];
-
-
 
         // 关键字查找
         $where = '';
@@ -96,19 +122,36 @@ class productAction
         {
             $Params['name'] = trim($Params['name']);
             $where .= sprintf(" and ( pro_name1 like '%%%s%%' ",$Params['name']);//
-            $where .= sprintf(" or pro_name1 like '%%%s%%' ",$Params['name']);
-            $where .= sprintf(" or pro_name1 like '%%%s%%' ",$Params['name']);
-            $where .= sprintf(" or pro_make1 like '%%%s%%' ",$Params['name']);
-            $where .= sprintf(" or pro_make1 like '%%%s%%' ",$Params['name']);
-            $where .= sprintf(" or pro_make1 like '%%%s%%' ",$Params['name']);
-            $where .= sprintf(" or pro_model1 like '%%%s%%' ",$Params['name']);
-            $where .= sprintf(" or pro_model2 like '%%%s%%' ",$Params['name']);
-            $where .= sprintf(" or pro_model3 like '%%%s%%') ",$Params['name']);
+            $where .= sprintf(" or pro_name2 like '%%%s%%' ",$Params['name']);
+            $where .= sprintf(" or pro_name3 like '%%%s%%' ) ",$Params['name']);
         }
+
+        if(!empty(trim($Params['make'])))
+        {
+            $Params['make'] = trim($Params['make']);
+            $where .= sprintf("  and ( pro_make1 like '%%%s%%' ",$Params['make']);
+            $where .= sprintf(" or pro_make2 like '%%%s%%' ",$Params['make']);
+            $where .= sprintf(" or pro_make3 like '%%%s%%') ",$Params['make']);
+        }
+
+        if(!empty(trim($Params['model'])))
+        {
+            $Params['model'] = trim($Params['model']);
+            $where .= sprintf("  and ( pro_model1 like '%%%s%%' ",$Params['model']);
+            $where .= sprintf(" or pro_model2 like '%%%s%%' ",$Params['model']);
+            $where .= sprintf(" or pro_model3 like '%%%s%%') ",$Params['model']);
+        }
+
+
+        if(!empty($Params['company']))
+            $where .= sprintf(" and u_company like '%%%s%%' ",$Params['company']);
+        if(!empty($Params['mobile']))
+            $where .= sprintf(" and u_mobile like '%%%s%%' ",$Params['mobile']);
         if(!empty($Params['uid']) && LibFc::Int($Params['uid']))
             $where .= sprintf(" and pro_u_id =%d ",$Params['uid']);
-        if(!empty($Params['status']))
+        if(isset($Params['status']) && $Params['status']!='')
             $where .= sprintf(" and pro_status ='%s' ",$Params['status']);
+
 
         // 工厂只能看到自己的 1管理员  2工厂 0客户
         if($_SESSION['_style']=='2')
@@ -120,7 +163,7 @@ class productAction
 
         // 排序
         $order .= "order by pro_atime desc";
-        $res = $MainBase->get('sh_product left join sh_user on u_id=pro_u_id',['sh_product.*','u_realname'],$where.$order.sprintf(" limit %d,%d",($page-1)*$perPage,$perPage));
+        $res = $MainBase->get('sh_product left join sh_user on u_id=pro_u_id',['sh_product.*','u_realname','u_company','u_mobile','u_tel'],$where.$order.sprintf(" limit %d,%d",($page-1)*$perPage,$perPage));
         $base = $res['data'];
         foreach ($base as $key => $value) {
             $base[$key]['pro_check_detail'] = json_decode($value['pro_check_json'],true);
@@ -128,12 +171,13 @@ class productAction
         // 主图
         $proIds = array_column($base, 'pro_id');
         if(!empty($proIds)){
-        	$MainProduct = new MainProduct();
-        	$res = $MainProduct->getProductMainPic($proIds);
-        	$pic = $res['data'];
+            $MainProduct = new MainProduct();
+            $res = $MainProduct->getProductMainPic($proIds);
+            $pic = $res['data'];
         }
         foreach ($base as $k => $v) {
-        	$base[$k]['imgUrl']=!empty($pic[$v['pro_id']]['prp_name'])?mvc::$cfg['HOST']['files'].$pic[$v['pro_id']]['prp_path'].'100/'.$pic[$v['pro_id']]['prp_name'].'.'.$pic[$v['pro_id']]['prp_ext']:mvc::$cfg['HOST']['adminUrl'].'static/images/noimg.gif';
+            $base[$k]['imgUrl']=!empty($pic[$v['pro_id']]['prp_name'])?mvc::$cfg['HOST']['files'].$pic[$v['pro_id']]['prp_path'].'100/'.$pic[$v['pro_id']]['prp_name'].'.'.$pic[$v['pro_id']]['prp_ext']:mvc::$cfg['HOST']['adminUrl'].'static/images/noimg.gif';
+            $base[$k]['imgUrlBg']=!empty($pic[$v['pro_id']]['prp_name'])?mvc::$cfg['HOST']['files'].$pic[$v['pro_id']]['prp_path'].'240/'.$pic[$v['pro_id']]['prp_name'].'.'.$pic[$v['pro_id']]['prp_ext']:mvc::$cfg['HOST']['adminUrl'].'static/images/noimg.gif';
         }
 
         LibTpl::Set('data',$base);
@@ -162,21 +206,191 @@ class productAction
         }
         LibTpl::Set('str',implode(',', $str));
         LibTpl::Set('colids',implode(',', $colids));
-        array_pop($show);
-        LibTpl::Set('shows',$show);
 
+        array_pop($show);
+        LibTpl::Set('showno',$show);
         // 分页
-        $res = $MainBase->get('sh_product',['count(*) sum'],$where,true);
+        $res = $MainBase->get('sh_product left join sh_user on u_id=pro_u_id',['count(*) sum'],$where,true);
         LibTpl::Set('count',$res['data']['sum']);
         LibTpl::Set('perPage',$perPage);
         LibTpl::Set('page',$page);
 
-        // 状态枚举 0待审 1已审核 2审核不通过
-        LibTpl::Set('proStat',['0'=>'待审','1'=>'已审核','2'=>'审核不通过']);
-        LibTpl::Set('proStatColor',['0'=>'gray','1'=>'green','2'=>'red']);
+        // 状态枚举 0待审 1已审核 2不通过
+        LibTpl::Set('proStat',['0'=>'待审','1'=>'已审核','2'=>'不通过']);
+        LibTpl::Set('proStatColor',['0'=>'warn','1'=>'green','2'=>'red']);
         // meta 
         LibTpl::Set('menu', 'list');
         LibTpl::Set('Params',$Params);
+        LibTpl::Set('title', '产品列表');
+        LibTpl::Put();
+    }
+
+    /**
+     * @method    配件搜索表单
+     * @author    xu
+     * @copyright 2018-05-16
+     */
+
+    function productSearch()
+    {
+        $Params = mvc::$URL_PARAMS;
+        if(!empty($Params['lang']))
+        {
+            if(!in_array($Params['lang'], array_keys(mvc::$cfg['LANG'])))
+            {
+                $Params['lang'] = 1;
+            }
+        }else{
+            $Params['lang'] = 1;
+        }
+
+        $MainBase = new MainBase();
+        $page = isset($Params['page']) ? (int)$Params['page']:1;
+        $perPage = 5;
+        // 全部显示列
+        $all = [
+			'pro_id' => '产品ID',
+            'pro_status' => '状态',
+            'img' => '图片',
+            'pro_name' => '名称',
+			'pro_price' => '价格',
+            'pro_make' => '品牌',
+			'pro_model' => '车型',
+            'u_company' => '公司',
+            'u_mobile' => '手机',
+            'u_tel' => '电话',
+			'check_admin' => '审核人',
+            'check_time' => '审核时间',
+            'check_remark' => '审核备注',
+            'pro_atime' => '添加时间',
+            'pro_etime' => '最近编辑',
+        ];
+
+        if(empty($Params['show']))
+        {
+            // 默认显示
+            $show = [
+                'pro_id',
+                'pro_status',
+                'img',
+                'pro_name',
+                'pro_make',
+                'pro_model',
+                'pro_price',
+                'u_company',          
+                'u_mobile'             
+            ];
+        }
+        else
+        {
+            $show = explode(',', $Params['show']);
+            // $show = array_reverse($show);
+        }
+
+
+        if($_SESSION['_style']=='0')
+        {
+            // 客户不查看审核信息
+            // 限制选中
+            unset($all['check_admin']);
+            unset($all['check_time']);
+            unset($all['check_remark']);
+            unset($all['pro_status']);
+            unset($all['pro_id']);
+            // 限制显示
+            $no = ['pro_status','pro_id'];
+            foreach ($show as $k=>$v)
+            {
+                if (in_array($v, $no))
+                    unset($show[$k]);
+            }
+        }
+
+        if($_SESSION['_style']=='2')
+        {
+            // 管理员不需要发布者信息
+            unset($all['u_company']);
+            unset($all['u_mobile']);
+            unset($all['u_tel']);
+            // 限制显示
+            $no = ['u_company','u_mobile','u_tel'];
+            foreach ($show as $k=>$v)
+            {
+                if (in_array($v, $no))
+                    unset($show[$k]);
+            }
+        }
+
+
+
+        // 列宽控制
+        /*$showWidth = [
+            'pro_id' => 60,
+            'pro_status' => 90,
+            'img' => 60,
+            'pro_name' => 120,
+            'pro_make' => 95,
+            'pro_price' => 95,
+            'check_admin' => 110,
+            'check_time' => 150,
+            'check_remark' => 160,
+            'u_company' => 120,
+            'u_mobile' => 60,
+            'u_tel' => 60,
+            'pro_model' => 95,
+            'pro_atime' => 150,
+            'pro_etime' => 150,
+        ];
+		*/
+
+        $ztree = [];
+        foreach ($all as $k => $v) {
+            $ztree[] = ['id'=>$k,'name'=>$v,'checked'=>in_array($k, $show)];
+        }
+        LibTpl::Set('ztreeNode',json_encode($ztree));
+
+        // 显示列
+        LibTpl::Set('show',$show);
+        LibTpl::Set('all',$all);
+        LibTpl::Set('showWidth',$showWidth);
+        
+        $str = [];
+        $colids = [];
+        if(!empty($Params['show'])){ 
+            foreach ($all as $k => $v) {
+                if(in_array($k, $show))
+                {
+                    $str[] = $v;
+                }
+            }
+            $colids = $show;
+        }
+        LibTpl::Set('str',implode(',', $str));
+        LibTpl::Set('colids',implode(',', $colids));
+
+        array_pop($show);
+        LibTpl::Set('showno',$show);
+
+
+        // 状态枚举 0待审 1已审核 2不通过
+        LibTpl::Set('proStat',['0'=>'待审','1'=>'已审核','2'=>'不通过']);
+        LibTpl::Set('proStatColor',['0'=>'warn','1'=>'green','2'=>'red']);
+        // meta 
+        LibTpl::Set('menu', 'list');
+        LibTpl::Set('Params',$Params);
+        LibTpl::Set('title', '产品列表');
+        LibTpl::Put();
+    }
+
+	/**
+	 * @method    配件列表
+	 * @author    xu
+	 * @copyright 2018-05-16
+	 */
+    function list()
+    {
+        LibTpl::Set('Params',$Params);
+        LibTpl::Set('menu', 'list');
         LibTpl::Set('title', '产品列表');
         LibTpl::Put();
     }
@@ -212,11 +426,16 @@ class productAction
             $dataArr=[];
             //基本信息
             $dataArr['base'] = array_map('trim', $_POST['base']);
+            if(empty($dataArr['base']['pro_price']))
+                $dataArr['base']['pro_price'] = 0;
+            else
+                $dataArr['base']['pro_price'] = floatval($dataArr['base']['pro_price']);
             $dataArr['base']['pro_u_id'] = $_SESSION['_userid'];
 
             // 图片信息
             $dataArr['img']=[];
-            $img = array_filter($_POST['img']);
+            // $img = array_filter($_POST['img']);
+            $img = $_POST['img'];
             foreach ($img as $k => $v) {
                 $temp=json_decode($v,true);
                 $dataArr['img'][$k]=[
@@ -251,6 +470,22 @@ class productAction
             
             $MainProduct=new MainProduct();
             $res=$MainProduct->setProduct($dataArr);
+
+            // 管理员编辑产品直接发布
+            if($_SESSION['_style']&&!empty($dataArr['base']['pro_id']))
+            {
+                $tmp = array();
+                $tmp['pro_status'] = 1;
+                $tmp['pro_check_json'] = json_encode(
+                    ['u_id'=>$_SESSION['_userid'],
+                    'u_name'=>$_SESSION['_userrealname'],
+                    'time'=>time(), 'remark'=>'管理员编辑产品']);
+
+                $MainBase = new MainBase();
+                $MainBase->set('sh_product',$tmp,sprintf("and pro_id=%d",$dataArr['base']['pro_id']));
+                
+            }
+
             LibFc::Go(mvc::$cfg['HOST']['adminUri'].'product/publish?proId='.$res['data']);
         }
 
@@ -295,10 +530,23 @@ class productAction
         if(empty($Params['proId']) || !LibFc::Int($Params['proId']))
             LibTpl::Error('审核配件不存在！');
 
-        // 获取
-        $MainProduct=new MainProduct();
-        $res=$MainProduct->getProduct($Params['proId']);
-        LibTpl::Set('data',$res['data']);
+        //基本信息
+        $proId = $Params['proId'];
+        $dataArr = [];
+        $where = sprintf(' and pro_id=%d',$proId);
+        if($_SESSION['_style']==0)
+            $where.=" and pro_status=1 ";//如果是用户只能看到审核通过的
+        $res=$MainBase->get('sh_product left join sh_user on u_id=pro_u_id',['*'],$where,true);
+        $dataArr['base']=$res['data'];
+        $dataArr['base']['pro_check_detail']=json_decode($res['data']['pro_check_json'],true);
+        //号码
+        $res=$MainBase->get('sh_product_number',['*'],sprintf(' and prn_pro_id=%d',$proId));
+        $dataArr['nums']=$res['data'];
+        //图片
+        $MainProduct = new MainProduct();
+        $res=$MainProduct->getProductPic($proId);
+        $dataArr['images']=$res['data'];
+        LibTpl::Set('data',$dataArr);
         if($_SESSION['_style']==1)
         {
             LibTpl::Set('title', '产品审核');
@@ -308,8 +556,8 @@ class productAction
             LibTpl::Set('title', '产品详情');
         }
 
-        // 状态枚举 0待审 1已审核 2审核不通过
-        LibTpl::Set('proStat',['0'=>'待审','1'=>'已审核','2'=>'审核不通过']);
+        // 状态枚举 0待审 1已审核 2不通过
+        LibTpl::Set('proStat',['0'=>'待审','1'=>'已审核','2'=>'不通过']);
         LibTpl::Set('proStatColor',['0'=>'gray','1'=>'green','2'=>'red']);
 
         LibTpl::Set('Params', $Params);
@@ -456,16 +704,12 @@ class productAction
 
         // print_r($_FILES['file']['tmp_name']);die;
 	    // $path=mvc::$cfg['ROOT'].'file/'.$Params['fileName'];
-	    if(empty($_FILES) || !file_exists($_FILES['file']['tmp_name']))
+	    if(empty($_FILES) || !file_exists($_FILES['file']['tmp_name']) || (pathinfo($_FILES['file']['name'],PATHINFO_EXTENSION)!='zip'))
 	    {
             LibFc::ajaxJsonEncode(['status'=>false,'data'=>'请上传zip类型压缩文件！']);
 	    	exit;
 	    }
-        if(!($_FILES['file']['type']=='application/x-zip-compressed'))
-        {
-            LibFc::ajaxJsonEncode(['status'=>false,'data'=>'请上传zip类型压缩文件！']);
-            exit;
-        }
+
         $file = $_FILES['file'];
         $res = $zip->open($file['tmp_name']);
         if ($res === TRUE) 
@@ -538,5 +782,65 @@ class productAction
         LibFc::ajaxJsonEncode(['status'=>true,'data'=>'操作成功！']);
     }
 
+
+    /**
+     * @method    配件删除
+     * @author      xu
+     * @copyright 2018-05-21
+     */
+    public function delSelect()
+    {
+        if($_SESSION['_style']==0)
+            LibFc::ajaxJsonEncode(['status'=>false,'data'=>'您没有权限删除商品！']);
+
+        if(empty($_POST['ids']) || empty($ids = array_filter(explode(',', $_POST['ids']),'LibFc::Int'))){
+            LibFc::ajaxJsonEncode(['status'=>false,'data'=>'参数错误']);
+        }
+        if($_SESSION['_style']==1)
+        {
+            // 管理员删除
+            $MainProduct=new MainProduct();
+            $MainProduct->delProduct($ids);
+        }
+        else
+        {
+            // 工厂删除
+            $MainBase = new MainBase();
+            $res = $MainBase->get("sh_product",['pro_id'],sprintf("and pro_id in (%s) and pro_u_id=%d",implode(",", $ids),$_SESSION['_userid']));
+            $ids = array_column($res['data'], 'pro_id');
+            if(!empty($ids)){
+                $MainProduct=new MainProduct();
+                $MainProduct->delProduct($ids);
+            }
+        }
+        LibFc::ajaxJsonEncode(['status'=>true,'data'=>'操作成功！']);
+    }
+
+
+    /**
+     * @method    批量审核
+     * @author      xu
+     * @copyright 2018-05-21
+     */
+    public function checkSelect()
+    {
+        if($_SESSION['_style']!=1)
+            LibFc::ajaxJsonEncode(['status'=>false,'data'=>'您没有权限审核商品！']);
+        $data = $_POST['data'];
+        if(empty($data['ids']) || empty($ids = array_filter(explode(',', $data['ids']),'LibFc::Int'))){
+            LibFc::ajaxJsonEncode(['status'=>false,'data'=>'参数错误']);
+        }
+
+        $tmp['pro_status'] = $data['status'];
+        $tmp['pro_check_json'] = json_encode(['u_id'=>$_SESSION['_userid'],'u_name'=>$_SESSION['_userrealname'],'time'=>time(), 'remark'=>$data['remark']]);
+
+        $MainBase = new MainBase();
+        $MainBase->set('sh_product',$tmp,sprintf("and pro_id in (%s)",implode(",", $ids)));
+        
+        LibFc::ajaxJsonEncode(['status'=>true,'data'=>'操作成功！']);
+    }
+
+    
+    
 
 }

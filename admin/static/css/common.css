@@ -1,21 +1,27 @@
 /*整体控制*/
 *{ margin: 0; padding: 0; font-family: Arial,'微软雅黑';}
+html{background:#fff; color: #666;}
 body{font-size: 12px;background:#fff;}
 img,h1,h2,h3,h4,h5,h6,ul,ol,dl,p{ padding: 0; margin: 0; list-style: none; border:none;}
 a{outline:0;color:#666;cursor:pointer;text-decoration:none;}
 a:visited{color:none;}
 a:hover{color:#ed6e6e;text-decoration:none;}
 a:link,a:visited,a:active{text-decoration:none;}
-input,textarea,select,button{display:inline-block;}
+input,textarea,select,button{display:inline-block;font-size:12px;}
 th{background:#f5f5f5;}
 label{font-weight:normal;margin-bottom:0px;}
 input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill { -webkit-box-shadow: 0 0 0px 1000px #f7f7f7 inset;}
-
+.layui-input, .layui-textarea{display:inline-block;}
+.layui-form-item .layui-input-inline{width:auto;}
+.layui-form-item{margin-bottom:10px;}
 .layui-table td, .layui-table th{padding:4px 8px;}
 .layui-table .layui-btn-container .layui-btn{margin:4px;}
 .layui-table .layui-btn+.layui-btn{margin:4px;}
 .layui-table-cell{padding:0px 8px;}
 .layui-table .layui-input{height:28px;}
+.layui-textarea{min-height:52px;}
+.modelset{width:800px;height:52px;}
+.layui-upload-list .layui-upload-img{margin:0}
 /**webuploader begin**/
 .webuploader-container {position: relative;}
 .webuploader-element-invisible {position: absolute !important;clip: rect(1px 1px 1px 1px); /* IE6, IE7 */ clip: rect(1px,1px,1px,1px);}
@@ -23,7 +29,7 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill { -we
 .webuploader-pick-hover {background: #00a2d4;}
 .webuploader-pick-disable {opacity: 0.6;pointer-events:none;}
 /**webuploader end**/
-
+.iframes{padding-top:5px;}
 
 /**对齐margin|padding|float begin**/
 .main_auto{width:1200px;margin: 0 auto;}
@@ -89,6 +95,10 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill { -we
 .w180{width:180px;}
 .w200{width:200px;}
 .w250{width:250px;}
+.w300{width:300px;}
+.w350{width:350px;}
+.w500{width:500px;}
+.w800{width:800px;}
 .bold{font-weight: bold;}
 .bolder{font-weight: bolder;}
 /**字体大小 end**/

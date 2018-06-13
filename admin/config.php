@@ -18,4 +18,5 @@ $config = [
 	'PATH_MODULE' => $SitePath.'module/',         //模块目录
 	'PATH_TPL' => $SitePath.'tpl/'                //模板目录
 ];
+$config['MONEYTURN']="6.4056";
 return array_merge_recursive($com_config, $config);

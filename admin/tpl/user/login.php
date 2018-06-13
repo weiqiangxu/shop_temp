@@ -66,7 +66,7 @@
                             ,icon: 1
                             ,time: 1000
                         }, function(){
-                            location.href = adminUri+'product/list';
+                            location.reload();
                         });
                     }else{
                         layer.alert(res.data, {icon: 5,title:'温馨提示'});

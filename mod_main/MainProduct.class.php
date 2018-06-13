@@ -22,6 +22,8 @@ class MainProduct extends MainBase
 		{
 			if(!empty($dataArr['base']['pro_id']))
 			{
+				// 转为待审核
+				$dataArr['base']['pro_status'] = 0;
 				//修改
 				$dataArr['base']['pro_etime'] = time();
 				$res=$this->set('sh_product',$dataArr['base'],sprintf(' and pro_id=%d',$dataArr['base']['pro_id']));
@@ -540,6 +542,8 @@ class MainProduct extends MainBase
 				
 				if($proId>0)
 				{
+					// 重置为待审核
+					$dataArr['pro_status'] = 0;
 					//修改
 					$this->set($this->table,$dataArr,sprintf(' and pro_id=%d',$proId));
 				}

@@ -1,3 +1,15 @@
+$(document).ready(function(){
+    $('#mainFrame').height($(window).height()-63);
+    $('#mainFrame').width($(window).width());
+    // $('.iframes').height($(window).height()-15);
+    // $(window).resize(function(){ $('#mainframe').height($(window).height());
+    // $('.iframes').height($(window).height()-15);});
+    // if(document.title != '') parent.document.title = document.title;
+    $('#SearchFrame').height(window.outerHeight-63);
+    // $('#SearchFrame').width(350);
+    $('#ListFrame').height(window.outerHeight-63);
+    // $('#ListFrame').width($(window).width()-340);
+});
 
 /**
  * 后台管理员登出

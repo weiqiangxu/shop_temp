@@ -60,8 +60,6 @@ class sysAction
     */
     public function userList()
     {
-        if($_SESSION['_userid']!='1')
-            LibTpl::Error('您没有权限操作！');
 
         $Params = mvc::$URL_PARAMS;
         $MainBase = new MainBase();
@@ -79,6 +77,12 @@ class sysAction
             $where .= sprintf(" and u_style = '%d' ",$Params['type']);
         }
 
+        // 只有管理员可以进来
+        if($_SESSION['_style']!='1')
+            LibTpl::Error('您没有权限操作！');
+        // 普通管理员无法添加管理员
+        if($Params['type']==1 && $_SESSION['_userid']!='1')
+            LibTpl::Error('您没有权限操作！');
 
         // 限制其他管理员查看超级管理员
         if($_SESSION['_userid']!='1')
@@ -189,7 +193,7 @@ class sysAction
             exit;
         }
 
-        if($_SESSION['_userid']!='1' && $_SESSION['_userid']!=$Params['id'])
+        if($_SESSION['_style']!='1')
             LibTpl::Error('您没有权限操作！');
 
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -246,4 +250,23 @@ class sysAction
         LibTpl::Set('title', '个人信息');
         LibTpl::Put();
     }
+
+    /**
+     * @method    编辑价格汇率
+     * @author    xu
+     * @copyright 2018-05-16
+    */
+    public function ajaxSetMoney()
+    {
+
+        $data = $_POST;
+        if($_SESSION['_style']!=1)
+            LibFc::ajaxJsonEncode(['status'=>false, 'data'=>'不具备权限！']);
+        $adminConfig = file_get_contents(mvc::$cfg['PATH_ROOT'].'config.php');
+        $f = 'MONEYTURN\']="'.$data['val'].'";';
+        $str = preg_replace("/MONEYTURN']=\"\S+\";/",$f, $adminConfig);
+        file_put_contents(mvc::$cfg['PATH_ROOT'].'config.php', $str);
+        LibFc::ajaxJsonEncode(['status'=>true, 'data'=>'修改成功！']);
+    }
+
 }

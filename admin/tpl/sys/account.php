@@ -3,37 +3,22 @@
         <div class="layui-card-body">
             <form class="layui-form" action="" method="post">
                 <div class="layui-row layui-col-space10 layui-form-item">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label"><span class="red">*</span> 状态：</label>
-                        <div class="layui-input-block">
-                            <input type="radio" checked value="1" title="启用">
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-row layui-col-space10 layui-form-item">
                     <div class="layui-col-lg3">
 
                         <label class="layui-form-label">
                             <span class="red">*</span> 用户名：
                         </label>
-                        <div class="layui-input-block">
-                        <input type="text" value="<?php echo $data['u_name'];?>" readonly class="layui-input none-border">
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-row layui-col-space10 layui-form-item">
-                    <div class="layui-col-lg3">
-                        <label class="layui-form-label">账户类型：</label>
-                        <div class="layui-input-block">
+                        <div class="layui-input-block" style="height: 36px;line-height: 36px;">
+                            <?php echo $data['u_name'];?>&nbsp;&nbsp;<span class="green">[ 已启用 ]</span>
+                            &nbsp;&nbsp;
                             <?php if($_SESSION['_super']){ ?>
-                            <input type="text" value="超级管理员" readonly class="layui-input none-border">
+                            [超级管理员 ]
                             <?php }else{ ?>
-                            <input type="text" value="<?php echo $typeDes[$data['u_style']];?>" readonly class="layui-input none-border">
+                            [<?php echo $typeDes[$data['u_style']];?> ]
                             <?php } ?>
                         </div>
                     </div>
                 </div>
-
                 <div class="layui-row layui-col-space10 layui-form-item">
                     <div class="layui-col-lg3">
                         <label class="layui-form-label"><span class="red">*</span> 公司名称：</label>
@@ -45,6 +30,20 @@
                         <label class="layui-form-label">联系人：</label>
                         <div class="layui-input-block">
                             <input type="text" value="<?php echo $data['u_realname'];?>" name="data[u_realname]" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+				<div class="layui-row layui-col-space10 layui-form-item">
+                    <div class="layui-col-lg3">
+                        <label class="layui-form-label">手机：</label>
+                        <div class="layui-input-block">
+                            <input type="text" lay-verType="tips" lay-verify="memmobile" name="data[u_mobile]" value="<?php echo $data['u_mobile'];?>" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-lg3">
+                        <label class="layui-form-label">电话：</label>
+                        <div class="layui-input-block">
+                            <input type="text" lay-verType="tips" name="data[u_tel]" value="<?php echo $data['u_tel'];?>" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                 </div>
@@ -62,24 +61,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="layui-row layui-col-space10 layui-form-item">
-                    <div class="layui-col-lg3">
-                        <label class="layui-form-label">手机：</label>
-                        <div class="layui-input-block">
-                            <input type="text" lay-verType="tips" lay-verify="memmobile" name="data[u_mobile]" value="<?php echo $data['u_mobile'];?>" autocomplete="off" class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-col-lg3">
-                        <label class="layui-form-label">电话：</label>
-                        <div class="layui-input-block">
-                            <input type="text" lay-verType="tips" name="data[u_tel]" value="<?php echo $data['u_tel'];?>" autocomplete="off" class="layui-input">
-                        </div>
-                    </div>
-                </div>
                 <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button class="layui-btn" lay-submit lay-filter="setuserinfo">提交</button>
-                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                     </div>
                 </div>
             </form>

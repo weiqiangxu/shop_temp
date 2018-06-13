@@ -20,14 +20,3 @@ SQLSTATE[HY000]: General error: 1366 Incorrect integer value: '' for column 'prp
 [SQL]INSERT INTO sh_product_pic (prp_pro_id,prp_path,prp_name,prp_ext,prp_seq,prp_crc32) VALUES('','pro/399/','5b1a40dc0b97f','jpg','0','F4CEDF0D')
 SQLSTATE[42S22]: Column not found: 1054 Unknown column 'prn_ismain' in 'field list'
 [SQL]INSERT INTO sh_product_number (prn_factory,prn_display,prm_format,prn_ismain,prn_pro_id) VALUES('濂旈┌','666','666','0','8')
-SQLSTATE[HY000] [2002] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
-
-[SQL]
-SQLSTATE[HY000] [2002] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
-
-[SQL]
-SQLSTATE[HY000] [2002] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
-
-[SQL]
-SQLSTATE[42S22]: Column not found: 1054 Unknown column 'prm_self' in 'where clause'
-[SQL]SELECT * FROM sh_product_number WHERE 1=1  and prn_pro_id=9 and prm_self=0

@@ -3,7 +3,6 @@
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md12">
             <div class="layui-card">
-                <div class="layui-card-header">修改密码</div>
                 <div class="layui-card-body" pad15>
 
                     <div class="layui-form" lay-filter="">

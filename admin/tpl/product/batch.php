@@ -1,23 +1,21 @@
 <?php include_once(mvc::$cfg['PATH_TPL'].'public/headBase.php');?>
 <div class="layui-fluid">
-    <button class="layui-btn layui-bg-gray" style="margin-bottom: 10px;">
-        批量添加 | 编辑产品信息
+    <button type="button" class="layui-btn" id="probase" style="margin-bottom: 10px;">
+        <i class="layui-icon">&#xe67c;</i>上传Excel文件
     </button>
     <button class="layui-btn layui-bg-cyan" onclick="location.href='<?php echo mvc::$cfg['HOST']['adminUrl']?>static/css/base.xls'" style="margin-bottom: 10px;">
         <i class="layui-icon layui-icon-download-circle"></i>
         模板下载
-    </button>
-    <button type="button" class="layui-btn" id="probase" style="margin-bottom: 10px;">
-        <i class="layui-icon">&#xe67c;</i>上传Excel文件
     </button>
     <br/>
     <img src="<?php echo mvc::$cfg['HOST']['adminUrl'].'static/images/base2.png'?>">
     <br/>
     <div class="gray">1、若未填写产品ID则新增产品</div>
     <div class="gray">2、如填写产品ID则编辑产品信息</div>
+    <div class="gray">3、如编辑的产品已经审核通过，编辑后状态变为待审需要管理员重新审核。</div>
     <br/>
     <br/>
-    <button class="layui-btn layui-bg-gray" style="margin-bottom: 10px;">批量更新产品图片</button>
+<!--     <button class="layui-btn layui-bg-gray" style="margin-bottom: 10px;">批量更新产品图片</button>
     <button class="layui-btn layui-bg-cyan" onclick="location.href='<?php echo mvc::$cfg['HOST']['adminUrl']?>static/css/model.zip'" style="margin-bottom: 10px;">
         <i class="layui-icon layui-icon-download-circle"></i>
         模板下载
@@ -27,7 +25,7 @@
     </button>
     <br/>
     <div class="gray">1、请图片压缩放置于一个文件夹中，将该文件夹压缩为zip文件夹，选中zip文件夹上传批量更新</div>
-    <div class="gray">2、图片命名使用'产品ID.png'若是排序图片则'产品ID@图片序号.jpg/png/',如果序号大于实际图片数目则自动由小到大排序。图片最多五张。</div>
+    <div class="gray">2、图片命名使用'产品ID.png'若是排序图片则'产品ID@图片序号.jpg/png/',如果序号大于实际图片数目则自动由小到大排序。图片最多五张。</div> -->
 </div>
 <script>
 layui.use('upload', function(){

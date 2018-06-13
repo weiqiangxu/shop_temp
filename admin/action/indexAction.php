@@ -11,6 +11,7 @@ class indexAction
 	public function index()
 	{
         // meta 
+        LibTpl::Set('menu', 'list');
 		LibTpl::Set('title', '后台管理');
 		LibTpl::Put();
 	}

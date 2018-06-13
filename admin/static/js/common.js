@@ -124,6 +124,7 @@ var VERIFICATION = {
 	idcard:function(val){return (/^\d{17}[\d|x]|\d{15}$/).test($.trim(val)); },
 	mempassword:function(val){return (/^\S{6,12}$/u).test($.trim(val));},//6到12个任意非空白字符
 	memqq:function(val){return (/^[0-9]+$/).test($.trim(val));},//纯数字
+	isnums:function(val){return (/^[0-9]+\.?[0-9]*$/).test(val);},//输入必须是数字 xxx.xxx
 	//强制保留小数点位数
 	floatNum:function(num, count){
 		var f = parseFloat(num);

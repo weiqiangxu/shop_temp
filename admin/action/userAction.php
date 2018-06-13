@@ -93,4 +93,25 @@ class userAction
         LibFc::ajaxJsonEncode(['status'=>true, 'data'=>'登录成功！']);
     }
 
+
+
+    /**
+     * @method    更新用户信息
+     * @author    xu
+     * @copyright 2018-05-17
+     */
+    function ajaxStat()
+    {
+
+        $MainBase = new MainBase();
+        $data = $_POST;
+
+        // 修改状态
+        $new = ($data['status']=='1')?'-1':'1';
+        $temp = ['u_status'=>$new];
+        $MainBase->set('sh_user',$temp,sprintf("and u_id=%d",$data['id']));
+        
+        LibFc::ajaxJsonEncode(['status'=>true, 'data'=>$new]);
+    }
+
 }
